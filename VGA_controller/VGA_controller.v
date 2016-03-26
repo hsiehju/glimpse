@@ -1,9 +1,9 @@
-module VGA_controller(power, master_clk, data, VGA_R, VGA_G, VGA_B, VGA_hSync, VGA_vSync, blank_n);
+module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA_hSync, VGA_vSync, blank_n);
 
 	input master_clk, data, power;
 	output reg [7:0] VGA_R, VGA_G, VGA_B;
 	
-	output VGA_hSync, VGA_vSync, blank_n;
+	output VGA_hSync, VGA_vSync, blank_n, DAC_clk;
 	
 	wire [9:0] xPixel;
 	wire [9:0] yPixel;
@@ -15,11 +15,29 @@ module VGA_controller(power, master_clk, data, VGA_R, VGA_G, VGA_B, VGA_hSync, V
 	wire G;
 	wire B;
 	
-	wire letter_mask;
+	wire mask1, mask2; 
+	reg letterM;
 	
+
+	
+	assign DAC_clk = VGA_clk;
 	
 	clk_divider divider1(master_clk, VGA_clk);
 	generate_VGA vga1(VGA_clk, xPixel, yPixel, display_area, VGA_hSync, VGA_vSync, blank_n);
+	
+	assign R = (display_area && (mask1 || mask2));
+	assign G = (display_area && (mask1 || mask2));
+	assign B = (display_area && (mask1 || mask2));
+	
+	Letters letter1(VGA_clk, 77, 200, 200, xPixel, yPixel, 1, mask1);
+	Letters letter2(VGA_clk, 77, 400, 400, xPixel, yPixel, 1, mask2);
+	
+	always@(posedge VGA_clk)
+	begin
+		VGA_R = {8{R}};
+		VGA_G = {8{G}};
+		VGA_B = {8{B}};
+	end 
 	
 endmodule
 
