@@ -22,8 +22,7 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	
 	clk_divider divider1(master_clk, VGA_clk);
 	generate_VGA vga1(VGA_clk, xPixel, yPixel, display_area, VGA_hSync, VGA_vSync, blank_n);
-	frame_buffer fb1(VGA_clk, buffer);
-	
+
 	assign R = (display_area && (maskB || maskA || maskM || maskC));
 	assign G = (display_area && (maskB || maskA || maskM || maskC));
 	assign B = (display_area && (maskB || maskA || maskM || maskC));
