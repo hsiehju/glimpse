@@ -15,22 +15,23 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	wire G;
 	wire B;
 	
-	wire mask1, mask2; 
+	wire maskA, maskB, maskC, maskM; 
 	reg letterM;
-	
-
 	
 	assign DAC_clk = VGA_clk;
 	
 	clk_divider divider1(master_clk, VGA_clk);
 	generate_VGA vga1(VGA_clk, xPixel, yPixel, display_area, VGA_hSync, VGA_vSync, blank_n);
+	frame_buffer fb1(VGA_clk, buffer);
 	
-	assign R = (display_area && (mask1 || mask2));
-	assign G = (display_area && (mask1 || mask2));
-	assign B = (display_area && (mask1 || mask2));
+	assign R = (display_area && (maskB || maskA || maskM || maskC));
+	assign G = (display_area && (maskB || maskA || maskM || maskC));
+	assign B = (display_area && (maskB || maskA || maskM || maskC));
 	
-	Letters letter1(VGA_clk, 77, 200, 200, xPixel, yPixel, 1, mask1);
-	Letters letter2(VGA_clk, 77, 400, 400, xPixel, yPixel, 1, mask2);
+	Letters letter1(VGA_clk, 66, 200, 200, xPixel, yPixel, 1, maskB);
+	Letters letter2(VGA_clk, 65, 230, 200, xPixel, yPixel, 1, maskA);
+	Letters letter3(VGA_clk, 77, 260, 200, xPixel, yPixel, 1, maskM);
+	Letters letter4(VGA_clk, 67, 290, 200, xPixel, yPixel, 1, maskC);
 	
 	always@(posedge VGA_clk)
 	begin
