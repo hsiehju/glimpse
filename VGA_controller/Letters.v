@@ -1,4 +1,4 @@
-module Letters(VGA_clk, ascii_val, xStart, yStart, xPixel, yPixel, scaling, mask);
+/*module Letters(VGA_clk, ascii_val, xStart, yStart, xPixel, yPixel, scaling, mask);
 	input VGA_clk;
 	input [7:0] ascii_val;
 	input [9:0] xStart, yStart, xPixel, yPixel;
@@ -79,10 +79,10 @@ module Letters(VGA_clk, ascii_val, xStart, yStart, xPixel, yPixel, scaling, mask
 							((xPixel >= xStart + 16) && (xPixel <= xStart + 18) && (yPixel == yStart - 1));
 			end
 			
-			/*C: begin
+			C: begin
 				mask <=  ((yPixel == yStart) && (xPixel >= xStart + 6) && (xPixel <= xStart + 14)) ||
 							((yPixel == yStart - 1) && (xPixel >= xStart + 4) && (xPixel <=
-			end*/
+			end
 			
 			M: begin
 				mask <= 	((xPixel == xStart) && (yPixel <= yStart) && (yPixel >= yStart-20)) || 
@@ -115,4 +115,4 @@ module Letters(VGA_clk, ascii_val, xStart, yStart, xPixel, yPixel, scaling, mask
 	
 	end 
 
-endmodule
+endmodule*/
