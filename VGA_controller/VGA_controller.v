@@ -22,7 +22,7 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	
 	clk_divider divider1(master_clk, VGA_clk);
 	generate_VGA vga1(VGA_clk, xPixel, yPixel, display_area, VGA_hSync, VGA_vSync, blank_n);
-	Font_library library1(VGA_clk, 6'b000101, xPixel, yPixel, pixelOutput);
+	Font_library library1(VGA_clk, 6'b001010, xPixel, yPixel, pixelOutput);
 
 	assign R = (display_area && pixelOutput);
 	assign G = (display_area && pixelOutput);
