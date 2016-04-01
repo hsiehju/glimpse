@@ -17,7 +17,7 @@
 -- PROGRAM "Quartus II 64-Bit"
 -- VERSION "Version 15.0.1 Build 150 06/03/2015 SJ Full Version"
 
--- DATE "04/01/2016 16:15:10"
+-- DATE "04/01/2016 19:06:11"
 
 -- 
 -- Device: Altera EP4CE115F29C7 Package FBGA780
@@ -39,13 +39,13 @@ ENTITY 	VGA_controller IS
 	power : IN std_logic;
 	master_clk : IN std_logic;
 	data : IN std_logic;
-	DAC_clk : BUFFER std_logic;
-	VGA_R : BUFFER std_logic_vector(7 DOWNTO 0);
-	VGA_G : BUFFER std_logic_vector(7 DOWNTO 0);
-	VGA_B : BUFFER std_logic_vector(7 DOWNTO 0);
-	VGA_hSync : BUFFER std_logic;
-	VGA_vSync : BUFFER std_logic;
-	blank_n : BUFFER std_logic
+	DAC_clk : OUT std_logic;
+	VGA_R : OUT std_logic_vector(7 DOWNTO 0);
+	VGA_G : OUT std_logic_vector(7 DOWNTO 0);
+	VGA_B : OUT std_logic_vector(7 DOWNTO 0);
+	VGA_hSync : OUT std_logic;
+	VGA_vSync : OUT std_logic;
+	blank_n : OUT std_logic
 	);
 END VGA_controller;
 
@@ -142,18 +142,16 @@ SIGNAL \divider1|q~q\ : std_logic;
 SIGNAL \divider1|VGA_clk~feeder_combout\ : std_logic;
 SIGNAL \divider1|VGA_clk~q\ : std_logic;
 SIGNAL \divider1|VGA_clk~clkctrl_outclk\ : std_logic;
-SIGNAL \vga1|Add1~17\ : std_logic;
-SIGNAL \vga1|Add1~18_combout\ : std_logic;
-SIGNAL \vga1|yPixel~3_combout\ : std_logic;
+SIGNAL \vga1|Add1~0_combout\ : std_logic;
 SIGNAL \vga1|Add0~0_combout\ : std_logic;
 SIGNAL \vga1|Add0~1\ : std_logic;
 SIGNAL \vga1|Add0~2_combout\ : std_logic;
-SIGNAL \vga1|xPixel~1_combout\ : std_logic;
+SIGNAL \vga1|xPixel~0_combout\ : std_logic;
 SIGNAL \vga1|Add0~3\ : std_logic;
 SIGNAL \vga1|Add0~4_combout\ : std_logic;
 SIGNAL \vga1|Add0~5\ : std_logic;
 SIGNAL \vga1|Add0~6_combout\ : std_logic;
-SIGNAL \vga1|xPixel~0_combout\ : std_logic;
+SIGNAL \vga1|xPixel~1_combout\ : std_logic;
 SIGNAL \vga1|Add0~7\ : std_logic;
 SIGNAL \vga1|Add0~8_combout\ : std_logic;
 SIGNAL \vga1|xPixel~4_combout\ : std_logic;
@@ -163,6 +161,7 @@ SIGNAL \vga1|Add0~11\ : std_logic;
 SIGNAL \vga1|Add0~12_combout\ : std_logic;
 SIGNAL \vga1|Add0~13\ : std_logic;
 SIGNAL \vga1|Add0~14_combout\ : std_logic;
+SIGNAL \vga1|Equal0~1_combout\ : std_logic;
 SIGNAL \vga1|Add0~15\ : std_logic;
 SIGNAL \vga1|Add0~16_combout\ : std_logic;
 SIGNAL \vga1|xPixel~2_combout\ : std_logic;
@@ -170,21 +169,9 @@ SIGNAL \vga1|Add0~17\ : std_logic;
 SIGNAL \vga1|Add0~18_combout\ : std_logic;
 SIGNAL \vga1|xPixel~3_combout\ : std_logic;
 SIGNAL \vga1|Equal0~0_combout\ : std_logic;
-SIGNAL \vga1|Equal0~1_combout\ : std_logic;
 SIGNAL \vga1|Equal0~2_combout\ : std_logic;
-SIGNAL \vga1|Add1~0_combout\ : std_logic;
 SIGNAL \vga1|Add1~1\ : std_logic;
 SIGNAL \vga1|Add1~2_combout\ : std_logic;
-SIGNAL \vga1|yPixel~1_combout\ : std_logic;
-SIGNAL \vga1|Equal1~1_combout\ : std_logic;
-SIGNAL \vga1|Equal1~0_combout\ : std_logic;
-SIGNAL \vga1|Equal1~2_combout\ : std_logic;
-SIGNAL \vga1|Add1~3\ : std_logic;
-SIGNAL \vga1|Add1~4_combout\ : std_logic;
-SIGNAL \vga1|yPixel~2_combout\ : std_logic;
-SIGNAL \vga1|Add1~5\ : std_logic;
-SIGNAL \vga1|Add1~6_combout\ : std_logic;
-SIGNAL \vga1|yPixel~0_combout\ : std_logic;
 SIGNAL \vga1|Add1~7\ : std_logic;
 SIGNAL \vga1|Add1~8_combout\ : std_logic;
 SIGNAL \vga1|Add1~9\ : std_logic;
@@ -193,47 +180,51 @@ SIGNAL \vga1|Add1~11\ : std_logic;
 SIGNAL \vga1|Add1~12_combout\ : std_logic;
 SIGNAL \vga1|Add1~13\ : std_logic;
 SIGNAL \vga1|Add1~14_combout\ : std_logic;
+SIGNAL \vga1|Equal1~1_combout\ : std_logic;
 SIGNAL \vga1|Add1~15\ : std_logic;
 SIGNAL \vga1|Add1~16_combout\ : std_logic;
+SIGNAL \vga1|Add1~17\ : std_logic;
+SIGNAL \vga1|Add1~18_combout\ : std_logic;
+SIGNAL \vga1|yPixel~3_combout\ : std_logic;
+SIGNAL \vga1|Equal1~0_combout\ : std_logic;
+SIGNAL \vga1|Equal1~2_combout\ : std_logic;
+SIGNAL \vga1|yPixel~2_combout\ : std_logic;
+SIGNAL \vga1|Add1~3\ : std_logic;
+SIGNAL \vga1|Add1~4_combout\ : std_logic;
+SIGNAL \vga1|yPixel~1_combout\ : std_logic;
+SIGNAL \vga1|Add1~5\ : std_logic;
+SIGNAL \vga1|Add1~6_combout\ : std_logic;
+SIGNAL \vga1|yPixel~0_combout\ : std_logic;
 SIGNAL \vga1|LessThan1~0_combout\ : std_logic;
 SIGNAL \vga1|display_area~0_combout\ : std_logic;
 SIGNAL \vga1|display_area~1_combout\ : std_logic;
 SIGNAL \vga1|display_area~q\ : std_logic;
-SIGNAL \R~3_combout\ : std_logic;
-SIGNAL \library1|Mux0~10_combout\ : std_logic;
-SIGNAL \library1|Mux0~11_combout\ : std_logic;
-SIGNAL \R~0_combout\ : std_logic;
-SIGNAL \R~1_combout\ : std_logic;
-SIGNAL \R~2_combout\ : std_logic;
 SIGNAL \R~4_combout\ : std_logic;
-SIGNAL \library1|Mux0~7_combout\ : std_logic;
-SIGNAL \library1|Mux0~8_combout\ : std_logic;
-SIGNAL \library1|Mux0~0_combout\ : std_logic;
-SIGNAL \library1|Mux0~1_combout\ : std_logic;
-SIGNAL \library1|Mux0~2_combout\ : std_logic;
-SIGNAL \library1|Mux0~3_combout\ : std_logic;
-SIGNAL \vga1|pv_sync~0_combout\ : std_logic;
-SIGNAL \library1|Mux0~4_combout\ : std_logic;
-SIGNAL \library1|Mux0~5_combout\ : std_logic;
-SIGNAL \library1|Mux0~6_combout\ : std_logic;
-SIGNAL \library1|Mux0~9_combout\ : std_logic;
+SIGNAL \R~12_combout\ : std_logic;
 SIGNAL \R~5_combout\ : std_logic;
+SIGNAL \R~6_combout\ : std_logic;
+SIGNAL \R~7_combout\ : std_logic;
+SIGNAL \R~11_combout\ : std_logic;
+SIGNAL \R~8_combout\ : std_logic;
+SIGNAL \R~9_combout\ : std_logic;
+SIGNAL \R~10_combout\ : std_logic;
 SIGNAL \VGA_R[0]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_R[0]~reg0_q\ : std_logic;
-SIGNAL \VGA_R[1]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_R[1]~reg0_q\ : std_logic;
 SIGNAL \VGA_R[2]~reg0_q\ : std_logic;
-SIGNAL \VGA_R[3]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_R[3]~reg0_q\ : std_logic;
+SIGNAL \VGA_R[4]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_R[4]~reg0_q\ : std_logic;
 SIGNAL \VGA_R[5]~reg0_q\ : std_logic;
 SIGNAL \VGA_R[6]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_R[6]~reg0_q\ : std_logic;
 SIGNAL \VGA_R[7]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_R[7]~reg0_q\ : std_logic;
+SIGNAL \VGA_G[0]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_G[0]~reg0_q\ : std_logic;
 SIGNAL \VGA_G[1]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_G[1]~reg0_q\ : std_logic;
+SIGNAL \VGA_G[2]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_G[2]~reg0_q\ : std_logic;
 SIGNAL \VGA_G[3]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_G[3]~reg0_q\ : std_logic;
@@ -241,29 +232,15 @@ SIGNAL \VGA_G[4]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_G[4]~reg0_q\ : std_logic;
 SIGNAL \VGA_G[5]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_G[5]~reg0_q\ : std_logic;
+SIGNAL \VGA_G[6]~reg0feeder_combout\ : std_logic;
 SIGNAL \VGA_G[6]~reg0_q\ : std_logic;
 SIGNAL \VGA_G[7]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[0]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[0]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[1]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[1]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[2]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[2]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[3]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[3]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[4]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[4]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[5]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[5]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[6]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[6]~reg0_q\ : std_logic;
-SIGNAL \VGA_B[7]~reg0feeder_combout\ : std_logic;
-SIGNAL \VGA_B[7]~reg0_q\ : std_logic;
 SIGNAL \vga1|ph_sync~0_combout\ : std_logic;
 SIGNAL \vga1|ph_sync~1_combout\ : std_logic;
 SIGNAL \vga1|ph_sync~2_combout\ : std_logic;
 SIGNAL \vga1|ph_sync~3_combout\ : std_logic;
 SIGNAL \vga1|ph_sync~q\ : std_logic;
+SIGNAL \vga1|pv_sync~0_combout\ : std_logic;
 SIGNAL \vga1|pv_sync~1_combout\ : std_logic;
 SIGNAL \vga1|pv_sync~q\ : std_logic;
 SIGNAL \vga1|xPixel\ : std_logic_vector(9 DOWNTO 0);
@@ -505,7 +482,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[0]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[0]~output_o\);
 
@@ -517,7 +494,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[1]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[1]~output_o\);
 
@@ -529,7 +506,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[2]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[2]~output_o\);
 
@@ -541,7 +518,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[3]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[3]~output_o\);
 
@@ -553,7 +530,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[4]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[4]~output_o\);
 
@@ -565,7 +542,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[5]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[5]~output_o\);
 
@@ -577,7 +554,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[6]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[6]~output_o\);
 
@@ -589,7 +566,7 @@ GENERIC MAP (
 	open_drain_output => "false")
 -- pragma translate_on
 PORT MAP (
-	i => \VGA_B[7]~reg0_q\,
+	i => GND,
 	devoe => ww_devoe,
 	o => \VGA_B[7]~output_o\);
 
@@ -681,7 +658,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \divider1|q~q\);
 
--- Location: LCCOMB_X55_Y72_N2
+-- Location: LCCOMB_X55_Y72_N28
 \divider1|VGA_clk~feeder\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \divider1|VGA_clk~feeder_combout\ = \divider1|q~q\
@@ -695,7 +672,7 @@ PORT MAP (
 	datad => \divider1|q~q\,
 	combout => \divider1|VGA_clk~feeder_combout\);
 
--- Location: FF_X55_Y72_N3
+-- Location: FF_X55_Y72_N29
 \divider1|VGA_clk\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -709,7 +686,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \divider1|VGA_clk~q\);
 
--- Location: CLKCTRL_G10
+-- Location: CLKCTRL_G13
 \divider1|VGA_clk~clkctrl\ : cycloneive_clkctrl
 -- pragma translate_off
 GENERIC MAP (
@@ -722,55 +699,24 @@ PORT MAP (
 	devpor => ww_devpor,
 	outclk => \divider1|VGA_clk~clkctrl_outclk\);
 
--- Location: LCCOMB_X25_Y72_N26
-\vga1|Add1~16\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X30_Y72_N10
+\vga1|Add1~0\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|Add1~16_combout\ = (\vga1|yPixel\(8) & (\vga1|Add1~15\ $ (GND))) # (!\vga1|yPixel\(8) & (!\vga1|Add1~15\ & VCC))
--- \vga1|Add1~17\ = CARRY((\vga1|yPixel\(8) & !\vga1|Add1~15\))
+-- \vga1|Add1~0_combout\ = \vga1|yPixel\(0) $ (VCC)
+-- \vga1|Add1~1\ = CARRY(\vga1|yPixel\(0))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1010010100001010",
-	sum_lutc_input => "cin")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(8),
-	datad => VCC,
-	cin => \vga1|Add1~15\,
-	combout => \vga1|Add1~16_combout\,
-	cout => \vga1|Add1~17\);
-
--- Location: LCCOMB_X25_Y72_N28
-\vga1|Add1~18\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|Add1~18_combout\ = \vga1|Add1~17\ $ (\vga1|yPixel\(9))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000111111110000",
-	sum_lutc_input => "cin")
--- pragma translate_on
-PORT MAP (
-	datad => \vga1|yPixel\(9),
-	cin => \vga1|Add1~17\,
-	combout => \vga1|Add1~18_combout\);
-
--- Location: LCCOMB_X25_Y72_N2
-\vga1|yPixel~3\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|yPixel~3_combout\ = (!\vga1|Equal1~2_combout\ & \vga1|Add1~18_combout\)
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000111100000000",
+	lut_mask => "0101010110101010",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datac => \vga1|Equal1~2_combout\,
-	datad => \vga1|Add1~18_combout\,
-	combout => \vga1|yPixel~3_combout\);
+	dataa => \vga1|yPixel\(0),
+	datad => VCC,
+	combout => \vga1|Add1~0_combout\,
+	cout => \vga1|Add1~1\);
 
--- Location: LCCOMB_X24_Y72_N6
+-- Location: LCCOMB_X32_Y72_N6
 \vga1|Add0~0\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~0_combout\ = \vga1|xPixel\(0) $ (VCC)
@@ -787,7 +733,7 @@ PORT MAP (
 	combout => \vga1|Add0~0_combout\,
 	cout => \vga1|Add0~1\);
 
--- Location: FF_X26_Y72_N17
+-- Location: FF_X32_Y72_N7
 \vga1|xPixel[0]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -796,13 +742,12 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	asdata => \vga1|Add0~0_combout\,
-	sload => VCC,
+	d => \vga1|Add0~0_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(0));
 
--- Location: LCCOMB_X24_Y72_N8
+-- Location: LCCOMB_X32_Y72_N8
 \vga1|Add0~2\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~2_combout\ = (\vga1|xPixel\(1) & (!\vga1|Add0~1\)) # (!\vga1|xPixel\(1) & ((\vga1|Add0~1\) # (GND)))
@@ -820,10 +765,10 @@ PORT MAP (
 	combout => \vga1|Add0~2_combout\,
 	cout => \vga1|Add0~3\);
 
--- Location: LCCOMB_X26_Y72_N14
-\vga1|xPixel~1\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X29_Y72_N6
+\vga1|xPixel~0\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|xPixel~1_combout\ = (!\vga1|Equal0~2_combout\ & \vga1|Add0~2_combout\)
+-- \vga1|xPixel~0_combout\ = (!\vga1|Equal0~2_combout\ & \vga1|Add0~2_combout\)
 
 -- pragma translate_off
 GENERIC MAP (
@@ -833,9 +778,9 @@ GENERIC MAP (
 PORT MAP (
 	datac => \vga1|Equal0~2_combout\,
 	datad => \vga1|Add0~2_combout\,
-	combout => \vga1|xPixel~1_combout\);
+	combout => \vga1|xPixel~0_combout\);
 
--- Location: FF_X26_Y72_N15
+-- Location: FF_X29_Y72_N7
 \vga1|xPixel[1]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -844,12 +789,12 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \vga1|xPixel~1_combout\,
+	d => \vga1|xPixel~0_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(1));
 
--- Location: LCCOMB_X24_Y72_N10
+-- Location: LCCOMB_X32_Y72_N10
 \vga1|Add0~4\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~4_combout\ = (\vga1|xPixel\(2) & (\vga1|Add0~3\ $ (GND))) # (!\vga1|xPixel\(2) & (!\vga1|Add0~3\ & VCC))
@@ -867,7 +812,7 @@ PORT MAP (
 	combout => \vga1|Add0~4_combout\,
 	cout => \vga1|Add0~5\);
 
--- Location: FF_X24_Y72_N11
+-- Location: FF_X32_Y72_N11
 \vga1|xPixel[2]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -881,7 +826,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(2));
 
--- Location: LCCOMB_X24_Y72_N12
+-- Location: LCCOMB_X32_Y72_N12
 \vga1|Add0~6\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~6_combout\ = (\vga1|xPixel\(3) & (!\vga1|Add0~5\)) # (!\vga1|xPixel\(3) & ((\vga1|Add0~5\) # (GND)))
@@ -899,22 +844,22 @@ PORT MAP (
 	combout => \vga1|Add0~6_combout\,
 	cout => \vga1|Add0~7\);
 
--- Location: LCCOMB_X26_Y72_N8
-\vga1|xPixel~0\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X32_Y72_N4
+\vga1|xPixel~1\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|xPixel~0_combout\ = (!\vga1|Equal0~2_combout\ & \vga1|Add0~6_combout\)
+-- \vga1|xPixel~1_combout\ = (!\vga1|Equal0~2_combout\ & \vga1|Add0~6_combout\)
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0011000000110000",
+	lut_mask => "0101010100000000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datab => \vga1|Equal0~2_combout\,
-	datac => \vga1|Add0~6_combout\,
-	combout => \vga1|xPixel~0_combout\);
+	dataa => \vga1|Equal0~2_combout\,
+	datad => \vga1|Add0~6_combout\,
+	combout => \vga1|xPixel~1_combout\);
 
--- Location: FF_X26_Y72_N9
+-- Location: FF_X32_Y72_N5
 \vga1|xPixel[3]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -923,12 +868,12 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \vga1|xPixel~0_combout\,
+	d => \vga1|xPixel~1_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(3));
 
--- Location: LCCOMB_X24_Y72_N14
+-- Location: LCCOMB_X32_Y72_N14
 \vga1|Add0~8\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~8_combout\ = (\vga1|xPixel\(4) & (\vga1|Add0~7\ $ (GND))) # (!\vga1|xPixel\(4) & (!\vga1|Add0~7\ & VCC))
@@ -936,17 +881,17 @@ PORT MAP (
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1100001100001100",
+	lut_mask => "1010010100001010",
 	sum_lutc_input => "cin")
 -- pragma translate_on
 PORT MAP (
-	datab => \vga1|xPixel\(4),
+	dataa => \vga1|xPixel\(4),
 	datad => VCC,
 	cin => \vga1|Add0~7\,
 	combout => \vga1|Add0~8_combout\,
 	cout => \vga1|Add0~9\);
 
--- Location: LCCOMB_X24_Y72_N28
+-- Location: LCCOMB_X32_Y72_N26
 \vga1|xPixel~4\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|xPixel~4_combout\ = (\vga1|Add0~8_combout\ & !\vga1|Equal0~2_combout\)
@@ -961,7 +906,7 @@ PORT MAP (
 	datad => \vga1|Equal0~2_combout\,
 	combout => \vga1|xPixel~4_combout\);
 
--- Location: FF_X24_Y72_N29
+-- Location: FF_X32_Y72_N27
 \vga1|xPixel[4]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -975,7 +920,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(4));
 
--- Location: LCCOMB_X24_Y72_N16
+-- Location: LCCOMB_X32_Y72_N16
 \vga1|Add0~10\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~10_combout\ = (\vga1|xPixel\(5) & (!\vga1|Add0~9\)) # (!\vga1|xPixel\(5) & ((\vga1|Add0~9\) # (GND)))
@@ -993,7 +938,7 @@ PORT MAP (
 	combout => \vga1|Add0~10_combout\,
 	cout => \vga1|Add0~11\);
 
--- Location: FF_X24_Y72_N17
+-- Location: FF_X32_Y72_N17
 \vga1|xPixel[5]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1007,7 +952,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(5));
 
--- Location: LCCOMB_X24_Y72_N18
+-- Location: LCCOMB_X32_Y72_N18
 \vga1|Add0~12\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~12_combout\ = (\vga1|xPixel\(6) & (\vga1|Add0~11\ $ (GND))) # (!\vga1|xPixel\(6) & (!\vga1|Add0~11\ & VCC))
@@ -1025,7 +970,7 @@ PORT MAP (
 	combout => \vga1|Add0~12_combout\,
 	cout => \vga1|Add0~13\);
 
--- Location: FF_X24_Y72_N19
+-- Location: FF_X32_Y72_N19
 \vga1|xPixel[6]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1039,7 +984,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(6));
 
--- Location: LCCOMB_X24_Y72_N20
+-- Location: LCCOMB_X32_Y72_N20
 \vga1|Add0~14\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~14_combout\ = (\vga1|xPixel\(7) & (!\vga1|Add0~13\)) # (!\vga1|xPixel\(7) & ((\vga1|Add0~13\) # (GND)))
@@ -1057,7 +1002,7 @@ PORT MAP (
 	combout => \vga1|Add0~14_combout\,
 	cout => \vga1|Add0~15\);
 
--- Location: FF_X24_Y72_N21
+-- Location: FF_X32_Y72_N21
 \vga1|xPixel[7]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1071,7 +1016,24 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(7));
 
--- Location: LCCOMB_X24_Y72_N22
+-- Location: LCCOMB_X32_Y72_N2
+\vga1|Equal0~1\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|Equal0~1_combout\ = (\vga1|xPixel\(0) & (!\vga1|xPixel\(7) & (\vga1|xPixel\(4) & !\vga1|xPixel\(2))))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000000000100000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|xPixel\(0),
+	datab => \vga1|xPixel\(7),
+	datac => \vga1|xPixel\(4),
+	datad => \vga1|xPixel\(2),
+	combout => \vga1|Equal0~1_combout\);
+
+-- Location: LCCOMB_X32_Y72_N22
 \vga1|Add0~16\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add0~16_combout\ = (\vga1|xPixel\(8) & (\vga1|Add0~15\ $ (GND))) # (!\vga1|xPixel\(8) & (!\vga1|Add0~15\ & VCC))
@@ -1079,17 +1041,17 @@ PORT MAP (
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1100001100001100",
+	lut_mask => "1010010100001010",
 	sum_lutc_input => "cin")
 -- pragma translate_on
 PORT MAP (
-	datab => \vga1|xPixel\(8),
+	dataa => \vga1|xPixel\(8),
 	datad => VCC,
 	cin => \vga1|Add0~15\,
 	combout => \vga1|Add0~16_combout\,
 	cout => \vga1|Add0~17\);
 
--- Location: LCCOMB_X24_Y72_N4
+-- Location: LCCOMB_X32_Y72_N30
 \vga1|xPixel~2\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|xPixel~2_combout\ = (\vga1|Add0~16_combout\ & !\vga1|Equal0~2_combout\)
@@ -1104,7 +1066,7 @@ PORT MAP (
 	datad => \vga1|Equal0~2_combout\,
 	combout => \vga1|xPixel~2_combout\);
 
--- Location: FF_X24_Y72_N5
+-- Location: FF_X32_Y72_N31
 \vga1|xPixel[8]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1118,37 +1080,37 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(8));
 
--- Location: LCCOMB_X24_Y72_N24
+-- Location: LCCOMB_X32_Y72_N24
 \vga1|Add0~18\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|Add0~18_combout\ = \vga1|xPixel\(9) $ (\vga1|Add0~17\)
+-- \vga1|Add0~18_combout\ = \vga1|Add0~17\ $ (\vga1|xPixel\(9))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0101101001011010",
+	lut_mask => "0000111111110000",
 	sum_lutc_input => "cin")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|xPixel\(9),
+	datad => \vga1|xPixel\(9),
 	cin => \vga1|Add0~17\,
 	combout => \vga1|Add0~18_combout\);
 
--- Location: LCCOMB_X24_Y72_N30
+-- Location: LCCOMB_X32_Y72_N0
 \vga1|xPixel~3\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|xPixel~3_combout\ = (!\vga1|Equal0~2_combout\ & \vga1|Add0~18_combout\)
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0011001100000000",
+	lut_mask => "0101010100000000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datab => \vga1|Equal0~2_combout\,
+	dataa => \vga1|Equal0~2_combout\,
 	datad => \vga1|Add0~18_combout\,
 	combout => \vga1|xPixel~3_combout\);
 
--- Location: FF_X24_Y72_N31
+-- Location: FF_X32_Y72_N1
 \vga1|xPixel[9]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1162,44 +1124,27 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|xPixel\(9));
 
--- Location: LCCOMB_X24_Y72_N26
+-- Location: LCCOMB_X31_Y72_N18
 \vga1|Equal0~0\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|Equal0~0_combout\ = (\vga1|xPixel\(0) & (!\vga1|xPixel\(5) & (\vga1|xPixel\(3) & !\vga1|xPixel\(6))))
+-- \vga1|Equal0~0_combout\ = (\vga1|xPixel\(3) & (!\vga1|xPixel\(6) & (!\vga1|xPixel\(1) & !\vga1|xPixel\(5))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0000000000100000",
+	lut_mask => "0000000000000010",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|xPixel\(0),
-	datab => \vga1|xPixel\(5),
-	datac => \vga1|xPixel\(3),
-	datad => \vga1|xPixel\(6),
+	dataa => \vga1|xPixel\(3),
+	datab => \vga1|xPixel\(6),
+	datac => \vga1|xPixel\(1),
+	datad => \vga1|xPixel\(5),
 	combout => \vga1|Equal0~0_combout\);
 
--- Location: LCCOMB_X24_Y72_N0
-\vga1|Equal0~1\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|Equal0~1_combout\ = (!\vga1|xPixel\(2) & (!\vga1|xPixel\(7) & (!\vga1|xPixel\(1) & \vga1|xPixel\(4))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000000100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|xPixel\(2),
-	datab => \vga1|xPixel\(7),
-	datac => \vga1|xPixel\(1),
-	datad => \vga1|xPixel\(4),
-	combout => \vga1|Equal0~1_combout\);
-
--- Location: LCCOMB_X24_Y72_N2
+-- Location: LCCOMB_X31_Y72_N8
 \vga1|Equal0~2\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|Equal0~2_combout\ = (\vga1|xPixel\(9) & (\vga1|xPixel\(8) & (\vga1|Equal0~0_combout\ & \vga1|Equal0~1_combout\)))
+-- \vga1|Equal0~2_combout\ = (\vga1|Equal0~1_combout\ & (\vga1|xPixel\(9) & (\vga1|xPixel\(8) & \vga1|Equal0~0_combout\)))
 
 -- pragma translate_off
 GENERIC MAP (
@@ -1207,45 +1152,13 @@ GENERIC MAP (
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|xPixel\(9),
-	datab => \vga1|xPixel\(8),
-	datac => \vga1|Equal0~0_combout\,
-	datad => \vga1|Equal0~1_combout\,
+	dataa => \vga1|Equal0~1_combout\,
+	datab => \vga1|xPixel\(9),
+	datac => \vga1|xPixel\(8),
+	datad => \vga1|Equal0~0_combout\,
 	combout => \vga1|Equal0~2_combout\);
 
--- Location: FF_X25_Y72_N3
-\vga1|yPixel[9]\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \vga1|yPixel~3_combout\,
-	ena => \vga1|Equal0~2_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \vga1|yPixel\(9));
-
--- Location: LCCOMB_X25_Y72_N10
-\vga1|Add1~0\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|Add1~0_combout\ = \vga1|yPixel\(0) $ (VCC)
--- \vga1|Add1~1\ = CARRY(\vga1|yPixel\(0))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0101010110101010",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(0),
-	datad => VCC,
-	combout => \vga1|Add1~0_combout\,
-	cout => \vga1|Add1~1\);
-
--- Location: FF_X25_Y72_N11
+-- Location: FF_X30_Y72_N11
 \vga1|yPixel[0]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1260,7 +1173,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|yPixel\(0));
 
--- Location: LCCOMB_X25_Y72_N12
+-- Location: LCCOMB_X30_Y72_N12
 \vga1|Add1~2\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add1~2_combout\ = (\vga1|yPixel\(1) & (!\vga1|Add1~1\)) # (!\vga1|yPixel\(1) & ((\vga1|Add1~1\) # (GND)))
@@ -1268,146 +1181,17 @@ PORT MAP (
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0101101001011111",
+	lut_mask => "0011110000111111",
 	sum_lutc_input => "cin")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|yPixel\(1),
+	datab => \vga1|yPixel\(1),
 	datad => VCC,
 	cin => \vga1|Add1~1\,
 	combout => \vga1|Add1~2_combout\,
 	cout => \vga1|Add1~3\);
 
--- Location: LCCOMB_X26_Y72_N6
-\vga1|yPixel~1\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|yPixel~1_combout\ = (\vga1|Add1~2_combout\ & !\vga1|Equal1~2_combout\)
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000000010101010",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|Add1~2_combout\,
-	datad => \vga1|Equal1~2_combout\,
-	combout => \vga1|yPixel~1_combout\);
-
--- Location: FF_X26_Y72_N7
-\vga1|yPixel[1]\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \vga1|yPixel~1_combout\,
-	ena => \vga1|Equal0~2_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \vga1|yPixel\(1));
-
--- Location: LCCOMB_X25_Y72_N8
-\vga1|Equal1~1\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|Equal1~1_combout\ = (\vga1|yPixel\(0) & (!\vga1|yPixel\(7) & (\vga1|yPixel\(2) & !\vga1|yPixel\(1))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000000000100000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(0),
-	datab => \vga1|yPixel\(7),
-	datac => \vga1|yPixel\(2),
-	datad => \vga1|yPixel\(1),
-	combout => \vga1|Equal1~1_combout\);
-
--- Location: LCCOMB_X25_Y72_N6
-\vga1|Equal1~0\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|Equal1~0_combout\ = (!\vga1|yPixel\(6) & (!\vga1|yPixel\(4) & (\vga1|yPixel\(3) & !\vga1|yPixel\(5))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000000000010000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(6),
-	datab => \vga1|yPixel\(4),
-	datac => \vga1|yPixel\(3),
-	datad => \vga1|yPixel\(5),
-	combout => \vga1|Equal1~0_combout\);
-
--- Location: LCCOMB_X25_Y72_N30
-\vga1|Equal1~2\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|Equal1~2_combout\ = (!\vga1|yPixel\(8) & (\vga1|yPixel\(9) & (\vga1|Equal1~1_combout\ & \vga1|Equal1~0_combout\)))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0100000000000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(8),
-	datab => \vga1|yPixel\(9),
-	datac => \vga1|Equal1~1_combout\,
-	datad => \vga1|Equal1~0_combout\,
-	combout => \vga1|Equal1~2_combout\);
-
--- Location: LCCOMB_X25_Y72_N14
-\vga1|Add1~4\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|Add1~4_combout\ = (\vga1|yPixel\(2) & (\vga1|Add1~3\ $ (GND))) # (!\vga1|yPixel\(2) & (!\vga1|Add1~3\ & VCC))
--- \vga1|Add1~5\ = CARRY((\vga1|yPixel\(2) & !\vga1|Add1~3\))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1010010100001010",
-	sum_lutc_input => "cin")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(2),
-	datad => VCC,
-	cin => \vga1|Add1~3\,
-	combout => \vga1|Add1~4_combout\,
-	cout => \vga1|Add1~5\);
-
--- Location: LCCOMB_X26_Y72_N30
-\vga1|yPixel~2\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|yPixel~2_combout\ = (!\vga1|Equal1~2_combout\ & \vga1|Add1~4_combout\)
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0011001100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datab => \vga1|Equal1~2_combout\,
-	datad => \vga1|Add1~4_combout\,
-	combout => \vga1|yPixel~2_combout\);
-
--- Location: FF_X26_Y72_N31
-\vga1|yPixel[2]\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \vga1|yPixel~2_combout\,
-	ena => \vga1|Equal0~2_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \vga1|yPixel\(2));
-
--- Location: LCCOMB_X25_Y72_N16
+-- Location: LCCOMB_X30_Y72_N16
 \vga1|Add1~6\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add1~6_combout\ = (\vga1|yPixel\(3) & (!\vga1|Add1~5\)) # (!\vga1|yPixel\(3) & ((\vga1|Add1~5\) # (GND)))
@@ -1425,37 +1209,7 @@ PORT MAP (
 	combout => \vga1|Add1~6_combout\,
 	cout => \vga1|Add1~7\);
 
--- Location: LCCOMB_X27_Y72_N20
-\vga1|yPixel~0\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|yPixel~0_combout\ = (\vga1|Add1~6_combout\ & !\vga1|Equal1~2_combout\)
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000000011001100",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datab => \vga1|Add1~6_combout\,
-	datad => \vga1|Equal1~2_combout\,
-	combout => \vga1|yPixel~0_combout\);
-
--- Location: FF_X27_Y72_N21
-\vga1|yPixel[3]\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \vga1|yPixel~0_combout\,
-	ena => \vga1|Equal0~2_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \vga1|yPixel\(3));
-
--- Location: LCCOMB_X25_Y72_N18
+-- Location: LCCOMB_X30_Y72_N18
 \vga1|Add1~8\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add1~8_combout\ = (\vga1|yPixel\(4) & (\vga1|Add1~7\ $ (GND))) # (!\vga1|yPixel\(4) & (!\vga1|Add1~7\ & VCC))
@@ -1473,7 +1227,7 @@ PORT MAP (
 	combout => \vga1|Add1~8_combout\,
 	cout => \vga1|Add1~9\);
 
--- Location: FF_X25_Y72_N19
+-- Location: FF_X30_Y72_N19
 \vga1|yPixel[4]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1488,7 +1242,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|yPixel\(4));
 
--- Location: LCCOMB_X25_Y72_N20
+-- Location: LCCOMB_X30_Y72_N20
 \vga1|Add1~10\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add1~10_combout\ = (\vga1|yPixel\(5) & (!\vga1|Add1~9\)) # (!\vga1|yPixel\(5) & ((\vga1|Add1~9\) # (GND)))
@@ -1506,7 +1260,7 @@ PORT MAP (
 	combout => \vga1|Add1~10_combout\,
 	cout => \vga1|Add1~11\);
 
--- Location: FF_X25_Y72_N21
+-- Location: FF_X30_Y72_N21
 \vga1|yPixel[5]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1521,7 +1275,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|yPixel\(5));
 
--- Location: LCCOMB_X25_Y72_N22
+-- Location: LCCOMB_X30_Y72_N22
 \vga1|Add1~12\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add1~12_combout\ = (\vga1|yPixel\(6) & (\vga1|Add1~11\ $ (GND))) # (!\vga1|yPixel\(6) & (!\vga1|Add1~11\ & VCC))
@@ -1539,7 +1293,7 @@ PORT MAP (
 	combout => \vga1|Add1~12_combout\,
 	cout => \vga1|Add1~13\);
 
--- Location: FF_X25_Y72_N23
+-- Location: FF_X30_Y72_N23
 \vga1|yPixel[6]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1554,7 +1308,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|yPixel\(6));
 
--- Location: LCCOMB_X25_Y72_N24
+-- Location: LCCOMB_X30_Y72_N24
 \vga1|Add1~14\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|Add1~14_combout\ = (\vga1|yPixel\(7) & (!\vga1|Add1~13\)) # (!\vga1|yPixel\(7) & ((\vga1|Add1~13\) # (GND)))
@@ -1572,7 +1326,7 @@ PORT MAP (
 	combout => \vga1|Add1~14_combout\,
 	cout => \vga1|Add1~15\);
 
--- Location: FF_X25_Y72_N25
+-- Location: FF_X30_Y72_N25
 \vga1|yPixel[7]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1587,7 +1341,42 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|yPixel\(7));
 
--- Location: FF_X25_Y72_N27
+-- Location: LCCOMB_X30_Y72_N2
+\vga1|Equal1~1\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|Equal1~1_combout\ = (\vga1|yPixel\(2) & (!\vga1|yPixel\(1) & (\vga1|yPixel\(0) & !\vga1|yPixel\(7))))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000000000100000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|yPixel\(2),
+	datab => \vga1|yPixel\(1),
+	datac => \vga1|yPixel\(0),
+	datad => \vga1|yPixel\(7),
+	combout => \vga1|Equal1~1_combout\);
+
+-- Location: LCCOMB_X30_Y72_N26
+\vga1|Add1~16\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|Add1~16_combout\ = (\vga1|yPixel\(8) & (\vga1|Add1~15\ $ (GND))) # (!\vga1|yPixel\(8) & (!\vga1|Add1~15\ & VCC))
+-- \vga1|Add1~17\ = CARRY((\vga1|yPixel\(8) & !\vga1|Add1~15\))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "1010010100001010",
+	sum_lutc_input => "cin")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|yPixel\(8),
+	datad => VCC,
+	cin => \vga1|Add1~15\,
+	combout => \vga1|Add1~16_combout\,
+	cout => \vga1|Add1~17\);
+
+-- Location: FF_X30_Y72_N27
 \vga1|yPixel[8]\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1602,10 +1391,197 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|yPixel\(8));
 
--- Location: LCCOMB_X25_Y72_N4
+-- Location: LCCOMB_X30_Y72_N28
+\vga1|Add1~18\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|Add1~18_combout\ = \vga1|Add1~17\ $ (\vga1|yPixel\(9))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000111111110000",
+	sum_lutc_input => "cin")
+-- pragma translate_on
+PORT MAP (
+	datad => \vga1|yPixel\(9),
+	cin => \vga1|Add1~17\,
+	combout => \vga1|Add1~18_combout\);
+
+-- Location: LCCOMB_X31_Y72_N16
+\vga1|yPixel~3\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|yPixel~3_combout\ = (!\vga1|Equal1~2_combout\ & \vga1|Add1~18_combout\)
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000111100000000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	datac => \vga1|Equal1~2_combout\,
+	datad => \vga1|Add1~18_combout\,
+	combout => \vga1|yPixel~3_combout\);
+
+-- Location: FF_X31_Y72_N17
+\vga1|yPixel[9]\ : dffeas
+-- pragma translate_off
+GENERIC MAP (
+	is_wysiwyg => "true",
+	power_up => "low")
+-- pragma translate_on
+PORT MAP (
+	clk => \divider1|VGA_clk~clkctrl_outclk\,
+	d => \vga1|yPixel~3_combout\,
+	ena => \vga1|Equal0~2_combout\,
+	devclrn => ww_devclrn,
+	devpor => ww_devpor,
+	q => \vga1|yPixel\(9));
+
+-- Location: LCCOMB_X30_Y72_N8
+\vga1|Equal1~0\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|Equal1~0_combout\ = (!\vga1|yPixel\(6) & (!\vga1|yPixel\(4) & (\vga1|yPixel\(3) & !\vga1|yPixel\(5))))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000000000010000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|yPixel\(6),
+	datab => \vga1|yPixel\(4),
+	datac => \vga1|yPixel\(3),
+	datad => \vga1|yPixel\(5),
+	combout => \vga1|Equal1~0_combout\);
+
+-- Location: LCCOMB_X31_Y72_N26
+\vga1|Equal1~2\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|Equal1~2_combout\ = (\vga1|Equal1~1_combout\ & (\vga1|yPixel\(9) & (!\vga1|yPixel\(8) & \vga1|Equal1~0_combout\)))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000100000000000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|Equal1~1_combout\,
+	datab => \vga1|yPixel\(9),
+	datac => \vga1|yPixel\(8),
+	datad => \vga1|Equal1~0_combout\,
+	combout => \vga1|Equal1~2_combout\);
+
+-- Location: LCCOMB_X30_Y72_N0
+\vga1|yPixel~2\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|yPixel~2_combout\ = (\vga1|Add1~2_combout\ & !\vga1|Equal1~2_combout\)
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000000010101010",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|Add1~2_combout\,
+	datad => \vga1|Equal1~2_combout\,
+	combout => \vga1|yPixel~2_combout\);
+
+-- Location: FF_X30_Y72_N1
+\vga1|yPixel[1]\ : dffeas
+-- pragma translate_off
+GENERIC MAP (
+	is_wysiwyg => "true",
+	power_up => "low")
+-- pragma translate_on
+PORT MAP (
+	clk => \divider1|VGA_clk~clkctrl_outclk\,
+	d => \vga1|yPixel~2_combout\,
+	ena => \vga1|Equal0~2_combout\,
+	devclrn => ww_devclrn,
+	devpor => ww_devpor,
+	q => \vga1|yPixel\(1));
+
+-- Location: LCCOMB_X30_Y72_N14
+\vga1|Add1~4\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|Add1~4_combout\ = (\vga1|yPixel\(2) & (\vga1|Add1~3\ $ (GND))) # (!\vga1|yPixel\(2) & (!\vga1|Add1~3\ & VCC))
+-- \vga1|Add1~5\ = CARRY((\vga1|yPixel\(2) & !\vga1|Add1~3\))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "1010010100001010",
+	sum_lutc_input => "cin")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|yPixel\(2),
+	datad => VCC,
+	cin => \vga1|Add1~3\,
+	combout => \vga1|Add1~4_combout\,
+	cout => \vga1|Add1~5\);
+
+-- Location: LCCOMB_X30_Y72_N6
+\vga1|yPixel~1\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|yPixel~1_combout\ = (\vga1|Add1~4_combout\ & !\vga1|Equal1~2_combout\)
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000000011110000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	datac => \vga1|Add1~4_combout\,
+	datad => \vga1|Equal1~2_combout\,
+	combout => \vga1|yPixel~1_combout\);
+
+-- Location: FF_X30_Y72_N7
+\vga1|yPixel[2]\ : dffeas
+-- pragma translate_off
+GENERIC MAP (
+	is_wysiwyg => "true",
+	power_up => "low")
+-- pragma translate_on
+PORT MAP (
+	clk => \divider1|VGA_clk~clkctrl_outclk\,
+	d => \vga1|yPixel~1_combout\,
+	ena => \vga1|Equal0~2_combout\,
+	devclrn => ww_devclrn,
+	devpor => ww_devpor,
+	q => \vga1|yPixel\(2));
+
+-- Location: LCCOMB_X30_Y72_N4
+\vga1|yPixel~0\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|yPixel~0_combout\ = (\vga1|Add1~6_combout\ & !\vga1|Equal1~2_combout\)
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000000011001100",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	datab => \vga1|Add1~6_combout\,
+	datad => \vga1|Equal1~2_combout\,
+	combout => \vga1|yPixel~0_combout\);
+
+-- Location: FF_X30_Y72_N5
+\vga1|yPixel[3]\ : dffeas
+-- pragma translate_off
+GENERIC MAP (
+	is_wysiwyg => "true",
+	power_up => "low")
+-- pragma translate_on
+PORT MAP (
+	clk => \divider1|VGA_clk~clkctrl_outclk\,
+	d => \vga1|yPixel~0_combout\,
+	ena => \vga1|Equal0~2_combout\,
+	devclrn => ww_devclrn,
+	devpor => ww_devpor,
+	q => \vga1|yPixel\(3));
+
+-- Location: LCCOMB_X31_Y72_N6
 \vga1|LessThan1~0\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|LessThan1~0_combout\ = (\vga1|yPixel\(8) & (\vga1|yPixel\(7) & (\vga1|yPixel\(6) & \vga1|yPixel\(5))))
+-- \vga1|LessThan1~0_combout\ = (\vga1|yPixel\(5) & (\vga1|yPixel\(6) & (\vga1|yPixel\(8) & \vga1|yPixel\(7))))
 
 -- pragma translate_off
 GENERIC MAP (
@@ -1613,30 +1589,30 @@ GENERIC MAP (
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|yPixel\(8),
-	datab => \vga1|yPixel\(7),
-	datac => \vga1|yPixel\(6),
-	datad => \vga1|yPixel\(5),
+	dataa => \vga1|yPixel\(5),
+	datab => \vga1|yPixel\(6),
+	datac => \vga1|yPixel\(8),
+	datad => \vga1|yPixel\(7),
 	combout => \vga1|LessThan1~0_combout\);
 
--- Location: LCCOMB_X28_Y72_N24
+-- Location: LCCOMB_X31_Y72_N28
 \vga1|display_area~0\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|display_area~0_combout\ = (!\vga1|yPixel\(9) & (((!\vga1|xPixel\(8) & !\vga1|xPixel\(7))) # (!\vga1|xPixel\(9))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0000010100010101",
+	lut_mask => "0000000000110111",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|yPixel\(9),
-	datab => \vga1|xPixel\(8),
-	datac => \vga1|xPixel\(9),
-	datad => \vga1|xPixel\(7),
+	dataa => \vga1|xPixel\(8),
+	datab => \vga1|xPixel\(9),
+	datac => \vga1|xPixel\(7),
+	datad => \vga1|yPixel\(9),
 	combout => \vga1|display_area~0_combout\);
 
--- Location: LCCOMB_X28_Y72_N20
+-- Location: LCCOMB_X29_Y72_N8
 \vga1|display_area~1\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|display_area~1_combout\ = (!\vga1|LessThan1~0_combout\ & \vga1|display_area~0_combout\)
@@ -1651,7 +1627,7 @@ PORT MAP (
 	datad => \vga1|display_area~0_combout\,
 	combout => \vga1|display_area~1_combout\);
 
--- Location: FF_X28_Y72_N21
+-- Location: FF_X29_Y72_N9
 \vga1|display_area\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -1665,224 +1641,26 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|display_area~q\);
 
--- Location: LCCOMB_X26_Y72_N26
-\R~3\ : cycloneive_lcell_comb
--- Equation(s):
--- \R~3_combout\ = (!\vga1|yPixel\(1) & (\vga1|xPixel\(3) & (!\vga1|yPixel\(2) & !\vga1|yPixel\(0))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000000000000100",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(1),
-	datab => \vga1|xPixel\(3),
-	datac => \vga1|yPixel\(2),
-	datad => \vga1|yPixel\(0),
-	combout => \R~3_combout\);
-
--- Location: LCCOMB_X27_Y72_N0
-\library1|Mux0~10\ : cycloneive_lcell_comb
--- Equation(s):
--- \library1|Mux0~10_combout\ = \vga1|yPixel\(3) $ (\vga1|yPixel\(4))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0011001111001100",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datab => \vga1|yPixel\(3),
-	datad => \vga1|yPixel\(4),
-	combout => \library1|Mux0~10_combout\);
-
--- Location: LCCOMB_X27_Y72_N8
-\library1|Mux0~11\ : cycloneive_lcell_comb
--- Equation(s):
--- \library1|Mux0~11_combout\ = (\vga1|yPixel\(3) & (!\vga1|yPixel\(4) & ((\vga1|yPixel\(1)) # (\vga1|yPixel\(2))))) # (!\vga1|yPixel\(3) & (((\vga1|yPixel\(4)))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0101101001011000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(3),
-	datab => \vga1|yPixel\(1),
-	datac => \vga1|yPixel\(4),
-	datad => \vga1|yPixel\(2),
-	combout => \library1|Mux0~11_combout\);
-
--- Location: LCCOMB_X27_Y72_N10
-\R~0\ : cycloneive_lcell_comb
--- Equation(s):
--- \R~0_combout\ = (\vga1|yPixel\(0) & ((\vga1|yPixel\(3)) # (!\vga1|xPixel\(0))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1101110100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|xPixel\(0),
-	datab => \vga1|yPixel\(3),
-	datad => \vga1|yPixel\(0),
-	combout => \R~0_combout\);
-
--- Location: LCCOMB_X27_Y72_N2
-\R~1\ : cycloneive_lcell_comb
--- Equation(s):
--- \R~1_combout\ = (\vga1|yPixel\(3) & (\R~0_combout\ & (\vga1|yPixel\(2) $ (!\vga1|yPixel\(1))))) # (!\vga1|yPixel\(3) & (\vga1|yPixel\(2) & ((\vga1|yPixel\(1)) # (\R~0_combout\))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1100011001000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(3),
-	datab => \vga1|yPixel\(2),
-	datac => \vga1|yPixel\(1),
-	datad => \R~0_combout\,
-	combout => \R~1_combout\);
-
--- Location: LCCOMB_X27_Y72_N12
-\R~2\ : cycloneive_lcell_comb
--- Equation(s):
--- \R~2_combout\ = (\vga1|xPixel\(3) & (!\vga1|yPixel\(4) & ((\R~1_combout\)))) # (!\vga1|xPixel\(3) & (((\library1|Mux0~11_combout\))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0111001001010000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|xPixel\(3),
-	datab => \vga1|yPixel\(4),
-	datac => \library1|Mux0~11_combout\,
-	datad => \R~1_combout\,
-	combout => \R~2_combout\);
-
--- Location: LCCOMB_X27_Y72_N30
+-- Location: LCCOMB_X29_Y72_N12
 \R~4\ : cycloneive_lcell_comb
 -- Equation(s):
--- \R~4_combout\ = (\vga1|xPixel\(1) & (((\library1|Mux0~10_combout\)))) # (!\vga1|xPixel\(1) & ((\R~2_combout\) # ((\R~3_combout\ & \library1|Mux0~10_combout\))))
+-- \R~4_combout\ = (\vga1|display_area~q\ & (\vga1|yPixel\(3) $ (\vga1|yPixel\(4))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1111001111100000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \R~3_combout\,
-	datab => \vga1|xPixel\(1),
-	datac => \library1|Mux0~10_combout\,
-	datad => \R~2_combout\,
-	combout => \R~4_combout\);
-
--- Location: LCCOMB_X27_Y72_N4
-\library1|Mux0~7\ : cycloneive_lcell_comb
--- Equation(s):
--- \library1|Mux0~7_combout\ = (\vga1|yPixel\(4)) # ((\vga1|yPixel\(3) & ((!\vga1|yPixel\(0)) # (!\vga1|yPixel\(1)))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111001011111010",
+	lut_mask => "0100010010001000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
 	dataa => \vga1|yPixel\(3),
-	datab => \vga1|yPixel\(1),
-	datac => \vga1|yPixel\(4),
-	datad => \vga1|yPixel\(0),
-	combout => \library1|Mux0~7_combout\);
-
--- Location: LCCOMB_X27_Y72_N16
-\library1|Mux0~8\ : cycloneive_lcell_comb
--- Equation(s):
--- \library1|Mux0~8_combout\ = (\vga1|xPixel\(3)) # (\library1|Mux0~7_combout\)
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111111001100",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datab => \vga1|xPixel\(3),
-	datad => \library1|Mux0~7_combout\,
-	combout => \library1|Mux0~8_combout\);
-
--- Location: LCCOMB_X27_Y72_N26
-\library1|Mux0~0\ : cycloneive_lcell_comb
--- Equation(s):
--- \library1|Mux0~0_combout\ = (!\vga1|yPixel\(3) & \vga1|yPixel\(4))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0011001100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datab => \vga1|yPixel\(3),
+	datab => \vga1|display_area~q\,
 	datad => \vga1|yPixel\(4),
-	combout => \library1|Mux0~0_combout\);
+	combout => \R~4_combout\);
 
--- Location: LCCOMB_X27_Y72_N14
-\library1|Mux0~1\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X29_Y72_N16
+\R~12\ : cycloneive_lcell_comb
 -- Equation(s):
--- \library1|Mux0~1_combout\ = (!\vga1|yPixel\(0) & (!\vga1|xPixel\(3) & (\library1|Mux0~0_combout\ & !\vga1|yPixel\(1))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0000000000010000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(0),
-	datab => \vga1|xPixel\(3),
-	datac => \library1|Mux0~0_combout\,
-	datad => \vga1|yPixel\(1),
-	combout => \library1|Mux0~1_combout\);
-
--- Location: LCCOMB_X26_Y72_N10
-\library1|Mux0~2\ : cycloneive_lcell_comb
--- Equation(s):
--- \library1|Mux0~2_combout\ = (\vga1|yPixel\(1) & (((\vga1|yPixel\(0)) # (!\vga1|yPixel\(3))))) # (!\vga1|yPixel\(1) & (\vga1|xPixel\(0) & (!\vga1|yPixel\(3) & \vga1|yPixel\(0))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1010111000001010",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|yPixel\(1),
-	datab => \vga1|xPixel\(0),
-	datac => \vga1|yPixel\(3),
-	datad => \vga1|yPixel\(0),
-	combout => \library1|Mux0~2_combout\);
-
--- Location: LCCOMB_X26_Y72_N4
-\library1|Mux0~3\ : cycloneive_lcell_comb
--- Equation(s):
--- \library1|Mux0~3_combout\ = (\vga1|xPixel\(3) & (\vga1|yPixel\(4) $ ((\vga1|yPixel\(3))))) # (!\vga1|xPixel\(3) & (!\vga1|yPixel\(4) & ((\library1|Mux0~2_combout\))))
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "0011100100101000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	dataa => \vga1|xPixel\(3),
-	datab => \vga1|yPixel\(4),
-	datac => \vga1|yPixel\(3),
-	datad => \library1|Mux0~2_combout\,
-	combout => \library1|Mux0~3_combout\);
-
--- Location: LCCOMB_X26_Y72_N22
-\vga1|pv_sync~0\ : cycloneive_lcell_comb
--- Equation(s):
--- \vga1|pv_sync~0_combout\ = (\vga1|yPixel\(3) & (\vga1|yPixel\(1) & !\vga1|yPixel\(4)))
+-- \R~12_combout\ = (\vga1|yPixel\(2) & (\vga1|display_area~q\ & !\vga1|yPixel\(4)))
 
 -- pragma translate_off
 GENERIC MAP (
@@ -1890,111 +1668,143 @@ GENERIC MAP (
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|yPixel\(3),
-	datab => \vga1|yPixel\(1),
+	dataa => \vga1|yPixel\(2),
+	datab => \vga1|display_area~q\,
 	datad => \vga1|yPixel\(4),
-	combout => \vga1|pv_sync~0_combout\);
+	combout => \R~12_combout\);
 
--- Location: LCCOMB_X26_Y72_N28
-\library1|Mux0~4\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X29_Y72_N4
+\R~5\ : cycloneive_lcell_comb
 -- Equation(s):
--- \library1|Mux0~4_combout\ = (\vga1|yPixel\(3) & (((!\vga1|xPixel\(3) & !\vga1|yPixel\(4))))) # (!\vga1|yPixel\(3) & (\vga1|yPixel\(4) & ((\vga1|xPixel\(3)) # (!\vga1|yPixel\(0)))))
+-- \R~5_combout\ = (\vga1|xPixel\(1) & (\vga1|xPixel\(3) $ (((\vga1|xPixel\(0) & !\vga1|xPixel\(2)))))) # (!\vga1|xPixel\(1) & ((\vga1|xPixel\(0) $ (\vga1|xPixel\(2)))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0000110100110000",
+	lut_mask => "1000110101111000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|yPixel\(0),
+	dataa => \vga1|xPixel\(1),
 	datab => \vga1|xPixel\(3),
-	datac => \vga1|yPixel\(3),
-	datad => \vga1|yPixel\(4),
-	combout => \library1|Mux0~4_combout\);
+	datac => \vga1|xPixel\(0),
+	datad => \vga1|xPixel\(2),
+	combout => \R~5_combout\);
 
--- Location: LCCOMB_X26_Y72_N18
-\library1|Mux0~5\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X29_Y72_N10
+\R~6\ : cycloneive_lcell_comb
 -- Equation(s):
--- \library1|Mux0~5_combout\ = (\vga1|xPixel\(3) & (((\vga1|pv_sync~0_combout\) # (\library1|Mux0~4_combout\)))) # (!\vga1|xPixel\(3) & (!\vga1|yPixel\(1) & ((\library1|Mux0~4_combout\))))
+-- \R~6_combout\ = \vga1|xPixel\(2) $ (((!\vga1|xPixel\(1) & \vga1|xPixel\(3))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1101110111000000",
+	lut_mask => "1011101101000100",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|yPixel\(1),
+	dataa => \vga1|xPixel\(1),
 	datab => \vga1|xPixel\(3),
-	datac => \vga1|pv_sync~0_combout\,
-	datad => \library1|Mux0~4_combout\,
-	combout => \library1|Mux0~5_combout\);
+	datad => \vga1|xPixel\(2),
+	combout => \R~6_combout\);
 
--- Location: LCCOMB_X26_Y72_N24
-\library1|Mux0~6\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X29_Y72_N30
+\R~7\ : cycloneive_lcell_comb
 -- Equation(s):
--- \library1|Mux0~6_combout\ = (\vga1|yPixel\(2) & ((\vga1|xPixel\(1)) # ((\library1|Mux0~3_combout\)))) # (!\vga1|yPixel\(2) & (!\vga1|xPixel\(1) & ((\library1|Mux0~5_combout\))))
+-- \R~7_combout\ = (\R~5_combout\ & (!\vga1|yPixel\(2) & (\vga1|xPixel\(1) $ (\R~6_combout\)))) # (!\R~5_combout\ & (((\R~6_combout\))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1011100110101000",
+	lut_mask => "0001111101000000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
 	dataa => \vga1|yPixel\(2),
 	datab => \vga1|xPixel\(1),
-	datac => \library1|Mux0~3_combout\,
-	datad => \library1|Mux0~5_combout\,
-	combout => \library1|Mux0~6_combout\);
+	datac => \R~5_combout\,
+	datad => \R~6_combout\,
+	combout => \R~7_combout\);
 
--- Location: LCCOMB_X27_Y72_N6
-\library1|Mux0~9\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X29_Y72_N14
+\R~11\ : cycloneive_lcell_comb
 -- Equation(s):
--- \library1|Mux0~9_combout\ = (\vga1|xPixel\(1) & ((\library1|Mux0~6_combout\ & (!\library1|Mux0~8_combout\)) # (!\library1|Mux0~6_combout\ & ((\library1|Mux0~1_combout\))))) # (!\vga1|xPixel\(1) & (((\library1|Mux0~6_combout\))))
+-- \R~11_combout\ = (\vga1|yPixel\(2) & (\vga1|display_area~q\ & ((!\vga1|yPixel\(4))))) # (!\vga1|yPixel\(2) & (\vga1|yPixel\(1) $ (((\vga1|display_area~q\ & !\vga1|yPixel\(4))))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0111011110100000",
+	lut_mask => "0101000010011100",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|xPixel\(1),
-	datab => \library1|Mux0~8_combout\,
-	datac => \library1|Mux0~1_combout\,
-	datad => \library1|Mux0~6_combout\,
-	combout => \library1|Mux0~9_combout\);
+	dataa => \vga1|yPixel\(2),
+	datab => \vga1|display_area~q\,
+	datac => \vga1|yPixel\(1),
+	datad => \vga1|yPixel\(4),
+	combout => \R~11_combout\);
 
--- Location: LCCOMB_X27_Y72_N24
-\R~5\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X29_Y72_N24
+\R~8\ : cycloneive_lcell_comb
 -- Equation(s):
--- \R~5_combout\ = (\vga1|display_area~q\ & ((\vga1|xPixel\(2) & ((\library1|Mux0~9_combout\))) # (!\vga1|xPixel\(2) & (\R~4_combout\))))
+-- \R~8_combout\ = (\vga1|yPixel\(2) & (\R~5_combout\ & ((\vga1|xPixel\(1)) # (\R~6_combout\)))) # (!\vga1|yPixel\(2) & (\R~5_combout\ $ (((\vga1|xPixel\(1)) # (\R~6_combout\)))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1010100000100000",
+	lut_mask => "1010010110010100",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|display_area~q\,
-	datab => \vga1|xPixel\(2),
-	datac => \R~4_combout\,
-	datad => \library1|Mux0~9_combout\,
-	combout => \R~5_combout\);
+	dataa => \vga1|yPixel\(2),
+	datab => \vga1|xPixel\(1),
+	datac => \R~5_combout\,
+	datad => \R~6_combout\,
+	combout => \R~8_combout\);
 
--- Location: LCCOMB_X28_Y72_N4
+-- Location: LCCOMB_X29_Y72_N18
+\R~9\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \R~9_combout\ = (\R~11_combout\ & ((\R~8_combout\))) # (!\R~11_combout\ & (\vga1|yPixel\(2) & !\R~8_combout\))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "1100110000100010",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|yPixel\(2),
+	datab => \R~11_combout\,
+	datad => \R~8_combout\,
+	combout => \R~9_combout\);
+
+-- Location: LCCOMB_X29_Y72_N22
+\R~10\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \R~10_combout\ = (\R~4_combout\ & ((\R~7_combout\ & ((!\R~9_combout\))) # (!\R~7_combout\ & (!\R~12_combout\ & \R~9_combout\)))) # (!\R~4_combout\ & (\R~12_combout\ & (\R~7_combout\ $ (!\R~9_combout\))))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0100001010100100",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \R~4_combout\,
+	datab => \R~12_combout\,
+	datac => \R~7_combout\,
+	datad => \R~9_combout\,
+	combout => \R~10_combout\);
+
+-- Location: LCCOMB_X29_Y72_N28
 \VGA_R[0]~reg0feeder\ : cycloneive_lcell_comb
 -- Equation(s):
--- \VGA_R[0]~reg0feeder_combout\ = \R~5_combout\
+-- \VGA_R[0]~reg0feeder_combout\ = \R~10_combout\
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1111111100000000",
+	lut_mask => "1111000011110000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datad => \R~5_combout\,
+	datac => \R~10_combout\,
 	combout => \VGA_R[0]~reg0feeder_combout\);
 
--- Location: FF_X28_Y72_N5
+-- Location: FF_X29_Y72_N29
 \VGA_R[0]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2008,21 +1818,7 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \VGA_R[0]~reg0_q\);
 
--- Location: LCCOMB_X28_Y72_N6
-\VGA_R[1]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_R[1]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_R[1]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N7
+-- Location: FF_X29_Y72_N19
 \VGA_R[1]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2031,12 +1827,13 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_R[1]~reg0feeder_combout\,
+	asdata => \R~10_combout\,
+	sload => VCC,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_R[1]~reg0_q\);
 
--- Location: FF_X27_Y72_N1
+-- Location: FF_X29_Y72_N17
 \VGA_R[2]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2045,27 +1842,13 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	asdata => \R~5_combout\,
+	asdata => \R~10_combout\,
 	sload => VCC,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_R[2]~reg0_q\);
 
--- Location: LCCOMB_X28_Y72_N16
-\VGA_R[3]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_R[3]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_R[3]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N17
+-- Location: FF_X29_Y72_N11
 \VGA_R[3]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2074,12 +1857,27 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_R[3]~reg0feeder_combout\,
+	asdata => \R~10_combout\,
+	sload => VCC,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_R[3]~reg0_q\);
 
--- Location: FF_X27_Y72_N11
+-- Location: LCCOMB_X28_Y72_N24
+\VGA_R[4]~reg0feeder\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \VGA_R[4]~reg0feeder_combout\ = \R~10_combout\
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "1111111100000000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	datad => \R~10_combout\,
+	combout => \VGA_R[4]~reg0feeder_combout\);
+
+-- Location: FF_X28_Y72_N25
 \VGA_R[4]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2088,13 +1886,12 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	asdata => \R~5_combout\,
-	sload => VCC,
+	d => \VGA_R[4]~reg0feeder_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_R[4]~reg0_q\);
 
--- Location: FF_X27_Y72_N29
+-- Location: FF_X29_Y72_N13
 \VGA_R[5]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2103,27 +1900,27 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	asdata => \R~5_combout\,
+	asdata => \R~10_combout\,
 	sload => VCC,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_R[5]~reg0_q\);
 
--- Location: LCCOMB_X26_Y72_N20
+-- Location: LCCOMB_X29_Y72_N2
 \VGA_R[6]~reg0feeder\ : cycloneive_lcell_comb
 -- Equation(s):
--- \VGA_R[6]~reg0feeder_combout\ = \R~5_combout\
+-- \VGA_R[6]~reg0feeder_combout\ = \R~10_combout\
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1111111100000000",
+	lut_mask => "1111000011110000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datad => \R~5_combout\,
+	datac => \R~10_combout\,
 	combout => \VGA_R[6]~reg0feeder_combout\);
 
--- Location: FF_X26_Y72_N21
+-- Location: FF_X29_Y72_N3
 \VGA_R[6]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2137,21 +1934,21 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \VGA_R[6]~reg0_q\);
 
--- Location: LCCOMB_X28_Y72_N22
+-- Location: LCCOMB_X29_Y72_N0
 \VGA_R[7]~reg0feeder\ : cycloneive_lcell_comb
 -- Equation(s):
--- \VGA_R[7]~reg0feeder_combout\ = \R~5_combout\
+-- \VGA_R[7]~reg0feeder_combout\ = \R~10_combout\
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1111111100000000",
+	lut_mask => "1111000011110000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datad => \R~5_combout\,
+	datac => \R~10_combout\,
 	combout => \VGA_R[7]~reg0feeder_combout\);
 
--- Location: FF_X28_Y72_N23
+-- Location: FF_X29_Y72_N1
 \VGA_R[7]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2165,7 +1962,21 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \VGA_R[7]~reg0_q\);
 
--- Location: FF_X26_Y72_N23
+-- Location: LCCOMB_X29_Y72_N26
+\VGA_G[0]~reg0feeder\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \VGA_G[0]~reg0feeder_combout\ = \R~10_combout\
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "1111000011110000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	datac => \R~10_combout\,
+	combout => \VGA_G[0]~reg0feeder_combout\);
+
+-- Location: FF_X29_Y72_N27
 \VGA_G[0]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2174,27 +1985,26 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	asdata => \R~5_combout\,
-	sload => VCC,
+	d => \VGA_G[0]~reg0feeder_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_G[0]~reg0_q\);
 
--- Location: LCCOMB_X27_Y72_N22
+-- Location: LCCOMB_X29_Y72_N20
 \VGA_G[1]~reg0feeder\ : cycloneive_lcell_comb
 -- Equation(s):
--- \VGA_G[1]~reg0feeder_combout\ = \R~5_combout\
+-- \VGA_G[1]~reg0feeder_combout\ = \R~10_combout\
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1111111100000000",
+	lut_mask => "1111000011110000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datad => \R~5_combout\,
+	datac => \R~10_combout\,
 	combout => \VGA_G[1]~reg0feeder_combout\);
 
--- Location: FF_X27_Y72_N23
+-- Location: FF_X29_Y72_N21
 \VGA_G[1]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2208,7 +2018,21 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \VGA_G[1]~reg0_q\);
 
--- Location: FF_X27_Y72_N17
+-- Location: LCCOMB_X28_Y72_N10
+\VGA_G[2]~reg0feeder\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \VGA_G[2]~reg0feeder_combout\ = \R~10_combout\
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "1111111100000000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	datad => \R~10_combout\,
+	combout => \VGA_G[2]~reg0feeder_combout\);
+
+-- Location: FF_X28_Y72_N11
 \VGA_G[2]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2217,16 +2041,15 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	asdata => \R~5_combout\,
-	sload => VCC,
+	d => \VGA_G[2]~reg0feeder_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_G[2]~reg0_q\);
 
--- Location: LCCOMB_X26_Y72_N0
+-- Location: LCCOMB_X28_Y72_N4
 \VGA_G[3]~reg0feeder\ : cycloneive_lcell_comb
 -- Equation(s):
--- \VGA_G[3]~reg0feeder_combout\ = \R~5_combout\
+-- \VGA_G[3]~reg0feeder_combout\ = \R~10_combout\
 
 -- pragma translate_off
 GENERIC MAP (
@@ -2234,10 +2057,10 @@ GENERIC MAP (
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datad => \R~5_combout\,
+	datad => \R~10_combout\,
 	combout => \VGA_G[3]~reg0feeder_combout\);
 
--- Location: FF_X26_Y72_N1
+-- Location: FF_X28_Y72_N5
 \VGA_G[3]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2251,10 +2074,10 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \VGA_G[3]~reg0_q\);
 
--- Location: LCCOMB_X26_Y72_N2
+-- Location: LCCOMB_X28_Y72_N26
 \VGA_G[4]~reg0feeder\ : cycloneive_lcell_comb
 -- Equation(s):
--- \VGA_G[4]~reg0feeder_combout\ = \R~5_combout\
+-- \VGA_G[4]~reg0feeder_combout\ = \R~10_combout\
 
 -- pragma translate_off
 GENERIC MAP (
@@ -2262,10 +2085,10 @@ GENERIC MAP (
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datad => \R~5_combout\,
+	datad => \R~10_combout\,
 	combout => \VGA_G[4]~reg0feeder_combout\);
 
--- Location: FF_X26_Y72_N3
+-- Location: FF_X28_Y72_N27
 \VGA_G[4]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2279,10 +2102,10 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \VGA_G[4]~reg0_q\);
 
--- Location: LCCOMB_X26_Y72_N12
+-- Location: LCCOMB_X28_Y72_N28
 \VGA_G[5]~reg0feeder\ : cycloneive_lcell_comb
 -- Equation(s):
--- \VGA_G[5]~reg0feeder_combout\ = \R~5_combout\
+-- \VGA_G[5]~reg0feeder_combout\ = \R~10_combout\
 
 -- pragma translate_off
 GENERIC MAP (
@@ -2290,10 +2113,10 @@ GENERIC MAP (
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datad => \R~5_combout\,
+	datad => \R~10_combout\,
 	combout => \VGA_G[5]~reg0feeder_combout\);
 
--- Location: FF_X26_Y72_N13
+-- Location: FF_X28_Y72_N29
 \VGA_G[5]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2307,7 +2130,21 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \VGA_G[5]~reg0_q\);
 
--- Location: FF_X27_Y72_N27
+-- Location: LCCOMB_X28_Y72_N22
+\VGA_G[6]~reg0feeder\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \VGA_G[6]~reg0feeder_combout\ = \R~10_combout\
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "1111111100000000",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	datad => \R~10_combout\,
+	combout => \VGA_G[6]~reg0feeder_combout\);
+
+-- Location: FF_X28_Y72_N23
 \VGA_G[6]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2316,13 +2153,12 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	asdata => \R~5_combout\,
-	sload => VCC,
+	d => \VGA_G[6]~reg0feeder_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_G[6]~reg0_q\);
 
--- Location: FF_X27_Y72_N25
+-- Location: FF_X29_Y72_N23
 \VGA_G[7]~reg0\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2331,302 +2167,78 @@ GENERIC MAP (
 -- pragma translate_on
 PORT MAP (
 	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \R~5_combout\,
+	d => \R~10_combout\,
 	devclrn => ww_devclrn,
 	devpor => ww_devpor,
 	q => \VGA_G[7]~reg0_q\);
 
--- Location: LCCOMB_X28_Y72_N0
-\VGA_B[0]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[0]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[0]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N1
-\VGA_B[0]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[0]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[0]~reg0_q\);
-
--- Location: LCCOMB_X28_Y72_N10
-\VGA_B[1]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[1]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[1]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N11
-\VGA_B[1]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[1]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[1]~reg0_q\);
-
--- Location: LCCOMB_X28_Y72_N12
-\VGA_B[2]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[2]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[2]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N13
-\VGA_B[2]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[2]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[2]~reg0_q\);
-
--- Location: LCCOMB_X28_Y72_N18
-\VGA_B[3]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[3]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[3]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N19
-\VGA_B[3]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[3]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[3]~reg0_q\);
-
--- Location: LCCOMB_X28_Y72_N28
-\VGA_B[4]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[4]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[4]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N29
-\VGA_B[4]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[4]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[4]~reg0_q\);
-
--- Location: LCCOMB_X28_Y72_N2
-\VGA_B[5]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[5]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[5]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N3
-\VGA_B[5]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[5]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[5]~reg0_q\);
-
--- Location: LCCOMB_X28_Y72_N8
-\VGA_B[6]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[6]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[6]~reg0feeder_combout\);
-
--- Location: FF_X28_Y72_N9
-\VGA_B[6]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[6]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[6]~reg0_q\);
-
--- Location: LCCOMB_X27_Y72_N18
-\VGA_B[7]~reg0feeder\ : cycloneive_lcell_comb
--- Equation(s):
--- \VGA_B[7]~reg0feeder_combout\ = \R~5_combout\
-
--- pragma translate_off
-GENERIC MAP (
-	lut_mask => "1111111100000000",
-	sum_lutc_input => "datac")
--- pragma translate_on
-PORT MAP (
-	datad => \R~5_combout\,
-	combout => \VGA_B[7]~reg0feeder_combout\);
-
--- Location: FF_X27_Y72_N19
-\VGA_B[7]~reg0\ : dffeas
--- pragma translate_off
-GENERIC MAP (
-	is_wysiwyg => "true",
-	power_up => "low")
--- pragma translate_on
-PORT MAP (
-	clk => \divider1|VGA_clk~clkctrl_outclk\,
-	d => \VGA_B[7]~reg0feeder_combout\,
-	devclrn => ww_devclrn,
-	devpor => ww_devpor,
-	q => \VGA_B[7]~reg0_q\);
-
--- Location: LCCOMB_X28_Y72_N30
+-- Location: LCCOMB_X31_Y72_N12
 \vga1|ph_sync~0\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|ph_sync~0_combout\ = (!\vga1|xPixel\(8) & (\vga1|xPixel\(9) & \vga1|xPixel\(7)))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0011000000000000",
+	lut_mask => "0100000001000000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	datab => \vga1|xPixel\(8),
-	datac => \vga1|xPixel\(9),
-	datad => \vga1|xPixel\(7),
+	dataa => \vga1|xPixel\(8),
+	datab => \vga1|xPixel\(9),
+	datac => \vga1|xPixel\(7),
 	combout => \vga1|ph_sync~0_combout\);
 
--- Location: LCCOMB_X26_Y72_N16
+-- Location: LCCOMB_X32_Y72_N28
 \vga1|ph_sync~1\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|ph_sync~1_combout\ = (\vga1|xPixel\(6) & ((\vga1|xPixel\(2)) # ((\vga1|xPixel\(1) & \vga1|xPixel\(0))))) # (!\vga1|xPixel\(6) & (\vga1|xPixel\(1) & (\vga1|xPixel\(0) & \vga1|xPixel\(2))))
+-- \vga1|ph_sync~1_combout\ = (\vga1|xPixel\(2) & ((\vga1|xPixel\(6)) # ((\vga1|xPixel\(1) & \vga1|xPixel\(0))))) # (!\vga1|xPixel\(2) & (\vga1|xPixel\(6) & (\vga1|xPixel\(1) & \vga1|xPixel\(0))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1110101010000000",
+	lut_mask => "1110100010001000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|xPixel\(6),
-	datab => \vga1|xPixel\(1),
-	datac => \vga1|xPixel\(0),
-	datad => \vga1|xPixel\(2),
+	dataa => \vga1|xPixel\(2),
+	datab => \vga1|xPixel\(6),
+	datac => \vga1|xPixel\(1),
+	datad => \vga1|xPixel\(0),
 	combout => \vga1|ph_sync~1_combout\);
 
--- Location: LCCOMB_X27_Y72_N28
+-- Location: LCCOMB_X31_Y72_N10
 \vga1|ph_sync~2\ : cycloneive_lcell_comb
 -- Equation(s):
 -- \vga1|ph_sync~2_combout\ = (\vga1|xPixel\(4)) # ((\vga1|xPixel\(3) & \vga1|ph_sync~1_combout\))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "1110111010101010",
+	lut_mask => "1110111011001100",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|xPixel\(4),
-	datab => \vga1|xPixel\(3),
+	dataa => \vga1|xPixel\(3),
+	datab => \vga1|xPixel\(4),
 	datad => \vga1|ph_sync~1_combout\,
 	combout => \vga1|ph_sync~2_combout\);
 
--- Location: LCCOMB_X28_Y72_N14
+-- Location: LCCOMB_X31_Y72_N0
 \vga1|ph_sync~3\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|ph_sync~3_combout\ = (\vga1|ph_sync~0_combout\ & ((\vga1|xPixel\(6) & ((!\vga1|ph_sync~2_combout\) # (!\vga1|xPixel\(5)))) # (!\vga1|xPixel\(6) & ((\vga1|xPixel\(5)) # (\vga1|ph_sync~2_combout\)))))
+-- \vga1|ph_sync~3_combout\ = (\vga1|ph_sync~0_combout\ & ((\vga1|xPixel\(5) & ((!\vga1|ph_sync~2_combout\) # (!\vga1|xPixel\(6)))) # (!\vga1|xPixel\(5) & ((\vga1|xPixel\(6)) # (\vga1|ph_sync~2_combout\)))))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0111000011100000",
+	lut_mask => "0010101010101000",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
-	dataa => \vga1|xPixel\(6),
+	dataa => \vga1|ph_sync~0_combout\,
 	datab => \vga1|xPixel\(5),
-	datac => \vga1|ph_sync~0_combout\,
+	datac => \vga1|xPixel\(6),
 	datad => \vga1|ph_sync~2_combout\,
 	combout => \vga1|ph_sync~3_combout\);
 
--- Location: FF_X28_Y72_N15
+-- Location: FF_X31_Y72_N1
 \vga1|ph_sync\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
@@ -2640,24 +2252,40 @@ PORT MAP (
 	devpor => ww_devpor,
 	q => \vga1|ph_sync~q\);
 
--- Location: LCCOMB_X25_Y72_N0
-\vga1|pv_sync~1\ : cycloneive_lcell_comb
+-- Location: LCCOMB_X30_Y72_N30
+\vga1|pv_sync~0\ : cycloneive_lcell_comb
 -- Equation(s):
--- \vga1|pv_sync~1_combout\ = (!\vga1|yPixel\(2) & (\vga1|LessThan1~0_combout\ & (\vga1|pv_sync~0_combout\ & !\vga1|yPixel\(9))))
+-- \vga1|pv_sync~0_combout\ = (\vga1|yPixel\(2)) # (((\vga1|yPixel\(4)) # (!\vga1|yPixel\(3))) # (!\vga1|yPixel\(1)))
 
 -- pragma translate_off
 GENERIC MAP (
-	lut_mask => "0000000001000000",
+	lut_mask => "1111111110111111",
 	sum_lutc_input => "datac")
 -- pragma translate_on
 PORT MAP (
 	dataa => \vga1|yPixel\(2),
-	datab => \vga1|LessThan1~0_combout\,
-	datac => \vga1|pv_sync~0_combout\,
-	datad => \vga1|yPixel\(9),
+	datab => \vga1|yPixel\(1),
+	datac => \vga1|yPixel\(3),
+	datad => \vga1|yPixel\(4),
+	combout => \vga1|pv_sync~0_combout\);
+
+-- Location: LCCOMB_X31_Y72_N22
+\vga1|pv_sync~1\ : cycloneive_lcell_comb
+-- Equation(s):
+-- \vga1|pv_sync~1_combout\ = (\vga1|LessThan1~0_combout\ & (!\vga1|yPixel\(9) & !\vga1|pv_sync~0_combout\))
+
+-- pragma translate_off
+GENERIC MAP (
+	lut_mask => "0000000000100010",
+	sum_lutc_input => "datac")
+-- pragma translate_on
+PORT MAP (
+	dataa => \vga1|LessThan1~0_combout\,
+	datab => \vga1|yPixel\(9),
+	datad => \vga1|pv_sync~0_combout\,
 	combout => \vga1|pv_sync~1_combout\);
 
--- Location: FF_X25_Y72_N1
+-- Location: FF_X31_Y72_N23
 \vga1|pv_sync\ : dffeas
 -- pragma translate_off
 GENERIC MAP (
