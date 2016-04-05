@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP4CE115F29) Path("/home/leahsch/Desktop/glimpse/VGA_controller/") File("VGA_controller.sof") MfrSpec(OpMask(1));
+		Device PartName(EP4CE115F29) Path("/home/wlgeng/magic_mirror/VGA_controller/") File("VGA_controller.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 
