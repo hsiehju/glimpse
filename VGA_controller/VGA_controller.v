@@ -19,6 +19,11 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	
 	wire [7:0]frame_buffer[39:0][14:0];
 	
+//	assign frame_buffer[30][13]= 224;
+//	assign frame_buffer[31][13]= 225;
+//	assign frame_buffer[30][14]= 226;
+//	assign frame_buffer[31][14]= 227;
+	
 	//78F
 	assign frame_buffer[7][4]= 108;
 	assign frame_buffer[8][4]= 109;
@@ -28,42 +33,67 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	assign frame_buffer[10][4]= 113;
 	assign frame_buffer[9][5]= 114;
 	assign frame_buffer[10][5]= 115;
+	assign frame_buffer[11][4]= 144;
+	assign frame_buffer[12][4]= 145;
+	assign frame_buffer[11][5]= 146;
+	assign frame_buffer[12][5]= 147;
+	
 	
 	//12:00
-	assign frame_buffer[28][1]= 84;
-	assign frame_buffer[29][1]= 85;
-	assign frame_buffer[28][2]= 86;
-	assign frame_buffer[29][2]= 87;
-	assign frame_buffer[30][1]= 88;
-	assign frame_buffer[31][1]= 89;
-	assign frame_buffer[30][2]= 90;
-	assign frame_buffer[31][2]= 91;
+	assign frame_buffer[26][1]= 84;
+	assign frame_buffer[27][1]= 85;
+	assign frame_buffer[26][2]= 86;
+	assign frame_buffer[27][2]= 87;
+	assign frame_buffer[28][1]= 88;
+	assign frame_buffer[29][1]= 89;
+	assign frame_buffer[28][2]= 90;
+	assign frame_buffer[29][2]= 91;
+	assign frame_buffer[30][1]= 120;
+	assign frame_buffer[31][1]= 121;
+	assign frame_buffer[30][2]= 122;
+	assign frame_buffer[31][2]= 123;
+	assign frame_buffer[32][1]= 80;
+	assign frame_buffer[33][1]= 81;
+	assign frame_buffer[32][2]= 82;
+	assign frame_buffer[33][2]= 83;
 	assign frame_buffer[34][1]= 80;
 	assign frame_buffer[35][1]= 81;
 	assign frame_buffer[34][2]= 82;
 	assign frame_buffer[35][2]= 83;
-	assign frame_buffer[36][1]= 80;
-	assign frame_buffer[37][1]= 81;
-	assign frame_buffer[36][2]= 82;
-	assign frame_buffer[37][2]= 83;
+	assign frame_buffer[36][1]= 52-43;
+	assign frame_buffer[37][1]= 57-43;
 	
-	//28 16
-	assign frame_buffer[28][4]= 88;
-	assign frame_buffer[29][4]= 89;
-	assign frame_buffer[28][5]= 90;
-	assign frame_buffer[29][5]= 91;
-	assign frame_buffer[30][4]= 112;
-	assign frame_buffer[31][4]= 113;
-	assign frame_buffer[30][5]= 114;
-	assign frame_buffer[31][5]= 115;
-	assign frame_buffer[34][4]= 84;
-	assign frame_buffer[35][4]= 85;
-	assign frame_buffer[34][5]= 86;
-	assign frame_buffer[35][5]= 87;
-	assign frame_buffer[36][4]= 104;
-	assign frame_buffer[37][4]= 105;
-	assign frame_buffer[36][5]= 106;
-	assign frame_buffer[37][5]= 107;
+	//FEB 28 16
+	assign frame_buffer[26][4]= 144;
+	assign frame_buffer[27][4]= 145;
+	assign frame_buffer[26][5]= 146;
+	assign frame_buffer[27][5]= 147;
+	assign frame_buffer[28][4]= 140;
+	assign frame_buffer[29][4]= 141;
+	assign frame_buffer[28][5]= 142;
+	assign frame_buffer[29][5]= 143;
+	assign frame_buffer[30][4]= 128;
+	assign frame_buffer[31][4]= 129;
+	assign frame_buffer[30][5]= 130;
+	assign frame_buffer[31][5]= 131;
+	
+	assign frame_buffer[34][4]= 88;
+	assign frame_buffer[35][4]= 89;
+	assign frame_buffer[34][5]= 90;
+	assign frame_buffer[35][5]= 91;
+	assign frame_buffer[36][4]= 112;
+	assign frame_buffer[37][4]= 113;
+	assign frame_buffer[36][5]= 114;
+	assign frame_buffer[37][5]= 115;
+	
+//	assign frame_buffer[34][4]= 84;
+//	assign frame_buffer[35][4]= 85;
+//	assign frame_buffer[34][5]= 86;
+//	assign frame_buffer[35][5]= 87;
+//	assign frame_buffer[36][4]= 104;
+//	assign frame_buffer[37][4]= 105;
+//	assign frame_buffer[36][5]= 106;
+//	assign frame_buffer[37][5]= 107;
 	
 	//"Quote of the day:
 	assign frame_buffer[7][9]= 38;
@@ -85,6 +115,7 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	assign frame_buffer[23][9]= 58-43;
 	
 	//Fuck yeah baby.
+	assign frame_buffer[7][11]= 51;
 	assign frame_buffer[8][11]= 70-43;
 	assign frame_buffer[9][11]= 117-43;
 	assign frame_buffer[10][11]= 99-43;
@@ -99,7 +130,8 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	assign frame_buffer[19][11]= 97-43;
 	assign frame_buffer[20][11]= 98-43;
 	assign frame_buffer[21][11]= 121-43;
-	assign frame_buffer[22][11]= 46-43;
+	assign frame_buffer[22][11]= 52;
+	assign frame_buffer[23][11]=51;
 	
 	assign DAC_clk = VGA_clk;
 	
