@@ -1,69 +1,143 @@
-
 #include <stdio.h>
 #include <inttypes.h>
 #include "drivers/mss_uart/mss_uart.h"
+#include "mytimer_post.h"
 
 
 #define RX_BUFF_SIZE    64
 
+void disable_interrupts() {
+	asm("cpsid i");
+}
+
+void enable_interrupts() {
+	asm("cpsie i");
+}
 
 char ascii_to_value(char);
 
 
+// FRAME BUFFER
+char frame_buffer[40][15];
+
+// MAIN PAGE
+char time[9] = "12:00:00"; // start on 0
+char date[9] = "JAN 1 16"
+char temp[3] = "73F";
+char quotes_lib[5][93];
+
+// TODO LIST
+char todo_list[5][35];
+int num_of_tasks = 0;
+int tasks_full = 0;
+
+// SONG
+char song_name[35];
+char artist[35];
+
+// update every 1 second
+void time_update() {
+	disable_interrupts();
+    
+    uint32_t time_sec = 0;
+    uint32_t time_min = 0;
+    uint32_t time_hour = 0;
+    
+    time_hour += atoi(time);
+    time_min += atoi(time + 3);
+    time_sec += atoi(time + 6);
+
+    if(time_sec == 59) {
+    	time_sec = 0;
+    	if(time_min == 59) {
+    		time_min = 0;
+    		if(time_hour == 12) {
+    			time_hour = 0;
+   			}
+    		else {
+    			time_hour++;
+    		}
+    	}
+    	else {
+    		time_min++;
+    	}
+    }
+    else {
+    	time_sec++;
+    }
+
+
+    
+
+    
+
+
+
+    
+
+
+	enable_interrupts();
+}
+
+// update every 5 seconds
+void temperature_update() {
+	disable_interrupts();
+	enable_interrupts();
+}
+
+
+void date_update() {
+
+}
+
 
 int main()
 {
- 	 uint8_t rx_buff[RX_BUFF_SIZE] = "";
- 	 uint8_t tx_buff[RX_BUFF_SIZE] = "";
+	uint8_t rx_buff[RX_BUFF_SIZE] = "";
+	uint8_t tx_buff[RX_BUFF_SIZE] = "";
 
- 	 size_t rx_size = 0;
- 	 size_t tx_size = 0;
+	size_t rx_size = 0;
+	size_t tx_size = 0;
 
  	uint8_t msg[RX_BUFF_SIZE] = "";
 
- 	 //initialize the UART
- 	 MSS_UART_init(
- 		 &g_mss_uart0,
- 		 MSS_UART_9600_BAUD,
- 		 MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT
- 	 );
- 	 MSS_UART_init(
- 		 &g_mss_uart1,
- 		 MSS_UART_9600_BAUD,
- 		 MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT
- 	 );
+ 	//initialize the UART
+ 	MSS_UART_init(
+ 		&g_mss_uart0,
+ 		MSS_UART_9600_BAUD,
+ 		MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT
+ 	);
+ 	MSS_UART_init(
+ 		&g_mss_uart1,
+ 		MSS_UART_9600_BAUD,
+ 		MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT
+ 	);
 
  	 // TODO LIST BOOKKEEPING
- 	 char todo_list[5][35];
- 	 int num_of_tasks = 0;
- 	 int tasks_full = 0;
  	unsigned x, y;
- 	 for(x = 0; x < 5; ++x) {
-		 for(y = 0; y < 35; ++y) {
+ 	for(x = 0; x < 5; ++x) {
+		for(y = 0; y < 35; ++y) {
 			 todo_list[x][y] = 0;
-		 }
-	 }
+		}
+	}
 
- 	 // QUOTE BOOKKEEPING
- 	 char quotes_lib[5][93];
- 	 int num_of_quotes = 0;
- 	 int quotes_full = 0;
- 	 for(x = 0; x < 5; ++x) {
-		 for(y = 0; y < 93; ++y) {
-			 quotes_lib[x][y] = 0;
-		 }
- 	 }
+ 	// QUOTE BOOKKEEPING
+ 	for(x = 0; x < 5; ++x) {
+		for(y = 0; y < 93; ++y) {
+			quotes_lib[x][y] = 0;
+		}
+ 	}
 
- 	 // frame buffer initialization
- 	 char frame_buffer[40][15];
-
- 	 for(x = 0; x < 40; ++x) {
- 		 for(y = 0; y < 15; ++y) {
- 			 frame_buffer[x][y] = 0;
- 		 }
- 	 }
+ 	// FRAME BUFFER INITIALIZATION
+ 	for(x = 0; x < 40; ++x) {
+ 		for(y = 0; y < 15; ++y) {
+ 			frame_buffer[x][y] = 0;
+ 		}
+ 	}
 
 
+
+ 	// BLUETOOTH THREAD
  	 while (1) {
 		 rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff) );
 		 if(rx_size > 0){
@@ -369,12 +443,9 @@ int main()
 					// maybe add change color of play button
 
 				}
-}
-
+			}
 			//MSS_UART_polled_tx( &g_mss_uart0, rx_buff, rx_size);
 		 }
-
-
 
 
 
@@ -408,4 +479,3 @@ char ascii_to_value(char ascii) {
 		return 63 - 44;
 	}
 }
-
