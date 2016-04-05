@@ -1,13 +1,14 @@
-module mirror_spi_driver(clk, ss, datain, dataout);
+module mirror_spi_driver(clk, ss, datain, frame_buff);
 
 input clk, ss;
 input datain;
 
-output dataout;
+//output dataout;
 
-wire [40][15]frame_buff;
+output [39:0][14:0]frame_buff;
 
 reg bit, col, row;
+reg [7:0]byte_builder;
 
 always @(posedge clk)
 begin
@@ -15,21 +16,28 @@ begin
 	begin //yes
 		 //we take in a single bit at a time, group together to form byte
 		 //insert byte into corresponding location in frame_buff
-		 //8 bit loop
-		 for (bit = 0; bit < 8; bit = bit + 1)
-		 begin
-			
-		 end
-		 //40 char wide loop
-		 for (col = 0; col < 49; col = col + 1)
-		 begin
-			 for (row = 0; row < 14; row = row + 1)
-				begin
-					
 		 
+		 
+		//40 char wide loop
+		for (col = 0; col < 40; col = col + 1)
+		begin
+			//15 char deep loop
+			for (row = 0; row < 15; row = row + 1)
+			begin
+			
+				//assign each bit in byte builder to the 
+				//corresponding value of datain
+				byte_builder <= 0;
+				//8 bit loop
+				for (bit = 0; bit < 8; bit = bit + 1)
+				begin
+					byte_builder[bit] = datain; 
 				end
-		 end
-		 //15 char deep loop
+				
+				frame_buff[col][row] <= byte_builder;
+			end
+		end
+		
 	end
 
 end 
