@@ -17,27 +17,38 @@ void update_time();
 // update every 5 seconds
 void update_temperature();
 
-void update_date();
+void update_page();
+
+void update_frame_buffer();
 
 // FRAME BUFFER
 char frame_buffer[40][15];
 
 // MAIN PAGE
-char time[9] = "12:00:00"; // start on 0
-char date[9] = "JAN 1 16";
-char temp[3] = "73F";
+char time[9] = "12:00:00";
+char date[5] = "JAN 1";
+char temp[4] = "73F";
+char icon[6][6];
+uint8_t icon_selected = 0;
 char quotes_lib[5][93];
-int num_of_quotes = 0;
+uint8_t num_of_quotes = 0;
 int quotes_full = 0;
 
 // TODO LIST
 char todo_list[5][35];
-int num_of_tasks = 0;
+uint8_t num_of_tasks = 0;
 int tasks_full = 0;
 
 // SONG
 char song_name[35];
 char artist[35];
+
+// PAGE SELECTION
+// 0 blank page
+// 1 main page
+// 2 todo list
+// 3 song page
+uint8_t page_selected = 0;
 
 
 int main()
@@ -85,7 +96,7 @@ int main()
  		}
  	}
 
-
+ 	startTimerContinuous(&update_frame_buffer, 10000); //10us
  	startTimerContinuous(&update_time, 100000000);	//1 second
  	startTimerContinuous(&update_temperature, 500000000);	//5 second
 
@@ -95,27 +106,96 @@ int main()
 
  	// BLUETOOTH polling
  	while (1) {
- 		//disable_interrupts();
 		rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff) );
 		if(rx_size > 0){
+			MSS_UART_polled_tx( &g_mss_uart0, rx_buff, rx_size);
 			char mode = rx_buff[0];
-			//enable_interrupts();
+
+			// MAIN PAGE
+			if('M' == mode) {
+				char command;
+				char full_string[37];
+				int index = 0;
+				while (1) {
+					while(1) {
+						rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff));
+
+						if(rx_size > 0) {
+							MSS_UART_polled_tx( &g_mss_uart0, rx_buff, rx_size);
+							if(rx_buff[0] == '\r') {
+								full_string[index] = '\0';
+								rx_size = 0;
+								index = 0;
+								break;
+							}
+							full_string[index] = rx_buff[0];
+							index++;
+						}
+					}
+
+					command = full_string[0];
+
+					// time
+					if(command == 't') {
+						if((full_string[2] - '0') != 1 && (full_string[2] - '0') != 0) {
+							char msg[38] = "Wrong time format <hour>:<min>:<sec>\n";
+							MSS_UART_polled_tx( &g_mss_uart1, msg, 38);
+						}
+
+						if((full_string[5] - '0') != 0 && (full_string[5] - '0') != 1 &&
+								(full_string[5] - '0') != 2 && (full_string[5] - '0') != 3 &&
+								(full_string[5] - '0') != 4 && (full_string[5] - '0') != 5) {
+							char msg[38] = "Wrong time format <hour>:<min>:<sec>\n";
+							MSS_UART_polled_tx( &g_mss_uart1, msg, 38);
+						}
+
+						if((full_string[8] - '0') != 0 && (full_string[8] - '0') != 1 &&
+								(full_string[8] - '0') != 2 && (full_string[8] - '0') != 3 &&
+								(full_string[8] - '0') != 4 && (full_string[8] - '0') != 5) {
+							char msg[38] = "Wrong time format <hour>:<min>:<sec>\n";
+							MSS_UART_polled_tx( &g_mss_uart1, msg, 38);
+						}
+
+						disable_interrupts();
+						time[0] = full_string[2];
+						time[1] = full_string[3];
+
+						time[3] = full_string[5];
+						time[4] = full_string[6];
+
+						time[6] = full_string[8];
+						time[7] = full_string[9];
+						enable_interrupts();
+					}
+					// date
+					else if(command == 'd') {
+
+					}
+					// type of weather
+					else if(command == 'w') {
+
+					}
+					else if(command == 'q') {
+						break;
+					}
+				}
+			}
+
 			if(mode == 'T') {
 				char command;
 				char full_string[37];
 				int index = 0;
 				while (1) {
 					while(1) {
-						//disable_interrupts();
 						rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff));
 						if(rx_size > 0) {
 							if(rx_buff[0] == '\r') {
 								full_string[index] = '\0';
 								rx_size = 0;
-								//enable_interrupts();
 								index = 0;
 								break;
 							}
+							MSS_UART_polled_tx( &g_mss_uart0, rx_buff, rx_size);
 							full_string[index] = rx_buff[0];
 							index++;
 						}
@@ -159,7 +239,8 @@ int main()
 							}
 						}
 						else {
-							// send message tasks full
+							char msg[16] = "Tasks are full\n";
+							MSS_UART_polled_tx( &g_mss_uart1, msg, 16);
 						}
 					}
 					// check task
@@ -263,10 +344,8 @@ int main()
 				}
 			}
 
-			//MSS_UART_polled_tx( &g_mss_uart0, rx_buff, rx_size);
+
 		 }
-
-
 
 		 tx_size = MSS_UART_get_rx( &g_mss_uart0, tx_buff, sizeof(tx_buff));
 		 if(tx_size > 0){
@@ -628,11 +707,6 @@ void enable_interrupts(void) {
 	asm("cpsie i");
 }
 
-
-char large_letter_conv(char* string) {
-
-}
-
 char ascii_to_value(char ascii) {
 	if(43 <= ascii && ascii <= 122) {
 		return ascii - 43;
@@ -753,7 +827,58 @@ void update_temperature() {
 }
 
 
-void update_date() {
+void update_frame_buffer() {
+	disable_interrupts();
+	if(page_selected == 0) {
+		// clear frame buffer
+	}
+	else if(page_selected == 1) {
 
+		// ICON
+		// FRAMEBUFFER start [6, 9]
+		if(icon_selected == 0) {
+
+		}
+		else if(icon_selected == 1) {
+
+		}
+		else if(icon_selected == 2) {
+
+		}
+		else if(icon_selected == 3) {
+
+		}
+		else if(icon_selected == 4) {
+
+		}
+		else if(icon_selected == 5) {
+
+		}
+
+		// TIME
+		// FRAMEBUFFER start [26, 1]
+
+		// TEMP
+		// FRAMEBUFFER start [9, 4]
+
+		// DATE
+		// FRAMEBUFFER start [26,4]
+
+	}
+	else if(page_selected  == 2) {
+
+	}
+	else if(page_selected == 3) {
+
+	}
+
+
+	enable_interrupts();
+}
+
+void timer_shutoff() {
+	// after 30 seconds shut off
+	disable_interrupts();
+	enable_interrupts();
 }
 
