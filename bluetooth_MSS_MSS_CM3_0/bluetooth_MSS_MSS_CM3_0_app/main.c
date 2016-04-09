@@ -2,12 +2,10 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "drivers/mss_uart/mss_uart.h"
+#include "drivers/mss_i2c/mss_i2c.h"
+#include "gesture.h"
 
 #define RX_BUFF_SIZE    64
-
-void disable_interrupts(void);
-
-void enable_interrupts(void);
 
 char ascii_to_value(char ascii);
 
@@ -53,6 +51,36 @@ uint8_t page_selected = 0;
 
 int main()
 {
+	MSS_I2C_init(&g_mss_i2c1 , APDS9960_I2C_ADDR , MSS_I2C_PCLK_DIV_256 );
+
+	gesture_init();
+	while (1) {
+	if(isGestureAvailable()) {
+		int gesture = readGesture();
+		if(gesture == DIR_UP) {
+			gesture = 6;
+		}
+		else if(gesture == DIR_DOWN) {
+			gesture = 6;
+		}
+		else if(gesture == DIR_LEFT) {
+			gesture = 6;
+		}
+		else if(gesture == DIR_RIGHT) {
+			gesture = 6;
+		}
+		else if(gesture == DIR_NEAR) {
+			gesture = 6;
+		}
+		else if(gesture == DIR_FAR) {
+			gesture = 6;
+		}
+		else {
+			gesture = 6;
+		}
+	}
+	}
+
 
 	uint8_t rx_buff[RX_BUFF_SIZE] = "";
 	uint8_t tx_buff[RX_BUFF_SIZE] = "";
@@ -881,4 +909,3 @@ void timer_shutoff() {
 	disable_interrupts();
 	enable_interrupts();
 }
-
