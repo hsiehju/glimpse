@@ -12,7 +12,9 @@
 #include "mss_gpio.h"
 #include <stdlib.h>
 
+void disable_interrupts(void);
 
+void enable_interrupts(void);
 
 //declare function pointer type
 typedef void (*handler_t)(void);
