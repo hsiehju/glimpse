@@ -1,154 +1,177 @@
-//module mirror_spi_driver(clk, ss, datain, LEDG);
-module mirror_spi_driver(clk, SCK, MOSI, MISO, SSEL, LED);
-input clk;
+module mirror_spi_driver(master_clk, s_clk, ss, datain, ssOut);
 
-input SCK, SSEL, MOSI;
-output MISO;
+	input master_clk, s_clk, ss;
+	input datain;
 
-output LED;
+	reg [7:0]frame_buffer[39:0][14:0];
 
+	integer bit = 0, col = 0, row = 0;
+	reg [7:0]byte_builder = 8'b0000000;
+	
+	reg byte_received;
+	
+	//shift s_clk
+	reg [2:0]s_clkr;
+	always @(posedge master_clk)
+		 s_clkr <= {s_clkr[1:0], s_clk};
+	wire s_clk_risingedge = (s_clkr[2:1] == 2'b01);  // detect rising edges
+	
+	// shift ss
+	reg [2:0] ssr;  
+	always @(posedge master_clk) 
+		ssr <= {ssr[1:0], ss};
+	wire ss_active = ~ssr[1];  // ss is active low
 
-// sync SCK to the FPGA clock using a 3-bits shift register
-reg [2:0] SCKr;  always @(posedge clk) SCKr <= {SCKr[1:0], SCK};
-wire SCK_risingedge = (SCKr[2:1]==2'b01);  // now we can detect SCK rising edges
-wire SCK_fallingedge = (SCKr[2:1]==2'b10);  // and falling edges
-
-// same thing for SSEL
-reg [2:0] SSELr;  always @(posedge clk) SSELr <= {SSELr[1:0], SSEL};
-wire SSEL_active = ~SSELr[1];  // SSEL is active low
-wire SSEL_startmessage = (SSELr[2:1]==2'b10);  // message starts at falling edge
-wire SSEL_endmessage = (SSELr[2:1]==2'b01);  // message stops at rising edge
-
-// and for MOSI
-reg [1:0] MOSIr;  always @(posedge clk) MOSIr <= {MOSIr[0], MOSI};
-wire MOSI_data = MOSIr[1];
-
-// we handle SPI in 8-bits format, so we need a 3 bits counter to count the bits as they come in
-reg [2:0] bitcnt;
-
-reg byte_received;  // high when a byte has been received
-reg [7:0] byte_data_received;
-
-always @(posedge clk)
-begin
-  if(~SSEL_active)
-    bitcnt <= 3'b000;
-  else
-  if(SCK_risingedge)
-  begin
-    bitcnt <= bitcnt + 3'b001;
-
-    // implement a shift-left register (since we receive the data MSB first)
-    byte_data_received <= {byte_data_received[6:0], MOSI_data};
-  end
-end
-
-always @(posedge clk) byte_received <= SSEL_active && SCK_risingedge && (bitcnt==3'b111);
-
-// we use the LSB of the data received to control an LED
-reg [3:0]LED = 4'b0000;
-always @(posedge clk) 
-	if(byte_received) 
-		if(byte_data_received == 8'b1100001)
+	// shift datain
+	reg [1:0] datainr;  
+	always @(posedge master_clk) 
+		datainr <= {datainr[0], datain};
+	wire MOSI_data = datainr[1];
+	
+	// check if slave selected and rising edge
+	always @(posedge master_clk)
+	begin
+		if(~ss_active)
+		begin
+			bit <= 0;
+			byte_builder[7:0] <= 8'b00000000;
+		end
+		else
+			if(s_clk_risingedge)
 			begin
-			LED[0] <= 1;
+				bit <= bit + 1;
+				byte_builder <= {byte_builder[6:0], MOSI_data};
 			end
-		else if(byte_data_received == 8'b1100010)
+	end
+	
+	// check if we received 8 bits
+	always @(posedge master_clk) 
+		byte_received <= ss_active && s_clk_risingedge && (bit == 7);
+	
+	output reg [6:0]ssOut;
+	// updata frame_buffer if byte has been received
+	always @(posedge master_clk)
+	begin
+		if(byte_received)
+		begin
+			frame_buffer[col][row] <= byte_builder;
+			if(col < 40)
+				col <= col + 1;
+			else
 			begin
-			LED[1] <= 1;
+				col <= 0;
+				if(row < 15)
+					row <= row + 1;
+				else
+					row <= 0;
 			end
-		else if(byte_data_received == 8'b1100011)
-			begin
-			LED[2] <= 1;
-			end
-		else if(byte_data_received == 8'b1100100)
-			LED[3] <= 1;
-endmodule 
-//input clk, ss;
-//input datain;
-//
-////output dataout;
-//
-//reg frame_buff[39:0][14:0];
-//
-//integer bit = 0, col = 0, row = 0;
-//reg [7:0]byte_builder;
-//
-//output reg [3:0]LEDG = 4'b0000;
-//
-////always @(posedge clk)
-////begin
-////	if(~ss) //are we selected?
-////	begin //yes
-////		 //we take in a single bit at a time, group together to form byte
-////		 //insert byte into corresponding location in frame_buff
-////		 
-////		//40 char wide loop
-////		for (col = 0; col < 40; col = col + 1)
-////		begin
-////			//15 char deep loop
-////			for (row = 0; row < 15; row = row + 1)
-////			begin
-////			
-////				//assign each bit in byte builder to the 
-////				//corresponding value of datain
-////				byte_builder <= 0;
-////				//8 bit loop
-////				for (bit = 0; bit < 8; bit = bit + 1)
-////				begin
-////					byte_builder[bit] = datain; 
-////				end
-////				
-////				frame_buff[col][row] <= byte_builder;
-////			end
-////		end
-////		
-////	end
-////
-////end
-//
-//always @(posedge clk)
+		end
+	end
+
+	always @*
+		case (byte_builder)
+			8'b00110110: ssOut = 7'b1000000; //a
+			8'b00110111: ssOut = 7'b1111001; //b
+			8'b00111000: ssOut = 7'b0100100; //c
+			8'b00111001: ssOut = 7'b0110000; //d
+			8'b00111010: ssOut = 7'b1101001; //e
+			8'b00111011: ssOut = 7'b0010010; //f
+			8'b00000110: ssOut = 7'b0000010;
+			8'b00000111: ssOut = 7'b1111000;
+			8'b00001000: ssOut = 7'b0000000;
+			8'b00001001: ssOut = 7'b0011000;
+			8'b00001010: ssOut = 7'b0001000;
+			8'b00001011: ssOut = 7'b0000011;
+			8'b00001100: ssOut = 7'b1000110;
+			8'b00001101: ssOut = 7'b0100001;
+			8'b00001110: ssOut = 7'b0000110;
+			8'b00001111: ssOut = 7'b0001110;
+		endcase	
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+//	always @*
 //begin
-//if(~ss)
-//begin
-//	if(bit < 8)
-//		begin
-//		byte_builder[bit] = datain;
-//		bit <= bit + 1;
-//		end
-//	else
-//		begin
-//		bit = 0;
-//		frame_buff[col][row] <= byte_builder;
-//		if(col < 40)
-//			col <= col + 1;
-//		else
-//			begin
-//			col <= 0;
-//			if(row < 15)
-//				row <= row + 1;
-//			else
-//				row <= 0;
-//			end
-//		
-//		end
-//end	
-//end
-//
-//always @*
-//begin
-//	if(byte_builder == 8'b1100001)
+//	if(byte_builder == 8'b01100001)
 //		begin
 //		LEDG[0] <= 1;
 //		end
-//	else if(byte_builder == 8'b1100010)
+//	if(byte_builder == 8'b01100010)
 //		begin
 //		LEDG[1] <= 1;
 //		end
-//	else if(byte_builder == 8'b1100011)
+//	if(byte_builder == 8'b01100011)
 //		begin
 //		LEDG[2] <= 1;
 //		end
-//	else if(byte_builder == 8'b1100100)
+//	if(byte_builder == 8'b01100100)
 //		LEDG[3] <= 1;
-//end 
+//	if(byte_builder == 8'b00000000)
+//		LEDG <= 4'b0000;
+//end
+//
+//	always @(posedge s_clk)
+//	begin
+//		if(~ss)
+//		begin
+//			if(bit >= 0)
+//			begin
+//				byte_builder[bit] <= datain;
+//			end
+//			else
+//			begin
+//				bit <= 7;
+//				frame_buffer[col][row] <= byte_builder;
+//				byte_builder[bit] <= datain;
+//				if(col < 40)
+//					col <= col + 1;
+//				else
+//				begin
+//					col <= 0;
+//					if(row < 15)
+//						row <= row + 1;
+//					else
+//						row <= 0;
+//				end
+//			end
+//				bit <= bit - 1;
+//		end
+//		else
+//			bit <= 7;
+//	end

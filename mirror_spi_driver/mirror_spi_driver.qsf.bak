@@ -50,25 +50,7 @@ set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
 
-set_location_assignment PIN_Y2 -to master_clk
-set_location_assignment PIN_AB22 -to clk
-set_location_assignment PIN_AC15 -to datain
-set_location_assignment PIN_AB21 -to ss
-set_location_assignment PIN_Y17 -to dataout
-
-set_location_assignment PIN_E21 -to LEDG[0]
-set_location_assignment PIN_E22 -to LEDG[1]
-set_location_assignment PIN_E25 -to LEDG[2]
-set_location_assignment PIN_E24 -to LEDG[3]
-
-set_location_assignment PIN_G18 -to ssOut[0]
-set_location_assignment PIN_F22 -to ssOut[1]
-set_location_assignment PIN_E17 -to ssOut[2]
-set_location_assignment PIN_L26 -to ssOut[3]
-set_location_assignment PIN_L25 -to ssOut[4]
-set_location_assignment PIN_J22 -to ssOut[5]
-set_location_assignment PIN_H22 -to ssOut[6]
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_location_assignment PIN_AB22 -to clk #GPIO[0]
+set_location_assignment PIN_AC15 -to ss #GPIO[1]
+set_location_assignment PIN_AB21 -to datain #GPIO[2]
+set_location_assignment PIN_Y17 -to dataout #GPIO[3]
