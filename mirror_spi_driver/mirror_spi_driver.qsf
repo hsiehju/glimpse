@@ -51,15 +51,25 @@ set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
 
 set_location_assignment PIN_Y2 -to master_clk
-set_location_assignment PIN_AB22 -to clk
+set_location_assignment PIN_AB22 -to s_clk
 set_location_assignment PIN_AC15 -to datain
 set_location_assignment PIN_AB21 -to ss
-set_location_assignment PIN_Y17 -to dataout
+set_location_assignment PIN_Y17 -to new_byte_out
+set_location_assignment PIN_Y16 -to new_byte_out1
+
+set_location_assignment PIN_AH23 -to byte_received
+set_location_assignment PIN_AG26 -to spi_clk
+#set_location_assignment PIN_AF20 -to clk_out
 
 set_location_assignment PIN_E21 -to LEDG[0]
 set_location_assignment PIN_E22 -to LEDG[1]
 set_location_assignment PIN_E25 -to LEDG[2]
 set_location_assignment PIN_E24 -to LEDG[3]
+set_location_assignment PIN_H21 -to LEDG[4]
+set_location_assignment PIN_G20 -to LEDG[5]
+set_location_assignment PIN_G22 -to LEDG[6]
+set_location_assignment PIN_G21 -to LEDG[7]
+set_location_assignment PIN_F17 -to LEDG[8]
 
 set_location_assignment PIN_G18 -to ssOut[0]
 set_location_assignment PIN_F22 -to ssOut[1]
@@ -68,7 +78,37 @@ set_location_assignment PIN_L26 -to ssOut[3]
 set_location_assignment PIN_L25 -to ssOut[4]
 set_location_assignment PIN_J22 -to ssOut[5]
 set_location_assignment PIN_H22 -to ssOut[6]
+
+set_location_assignment PIN_M24 -to ssOut1[0]
+set_location_assignment PIN_Y22 -to ssOut1[1]
+set_location_assignment PIN_W21 -to ssOut1[2]
+set_location_assignment PIN_W22 -to ssOut1[3]
+set_location_assignment PIN_W25 -to ssOut1[4]
+set_location_assignment PIN_U23 -to ssOut1[5]
+set_location_assignment PIN_U24 -to ssOut1[6]
+
+set_location_assignment PIN_AA25 -to ssOut2[0]
+set_location_assignment PIN_AA26 -to ssOut2[1]
+set_location_assignment PIN_Y25 -to ssOut2[2]
+set_location_assignment PIN_W26 -to ssOut2[3]
+set_location_assignment PIN_Y26 -to ssOut2[4]
+set_location_assignment PIN_W27 -to ssOut2[5]
+set_location_assignment PIN_W28 -to ssOut2[6]
+
+set_location_assignment PIN_G19 -to LEDR[0]
+set_location_assignment PIN_F19 -to LEDR[1]
+set_location_assignment PIN_E19 -to LEDR[2]
+set_location_assignment PIN_F21 -to LEDR[3]
+set_location_assignment PIN_F18 -to LEDR[4]
+set_location_assignment PIN_E18 -to LEDR[5]
+set_location_assignment PIN_J19 -to LEDR[6]
+set_location_assignment PIN_H19 -to LEDR[7]
+
+set_location_assignment PIN_M23 -to button
+set_location_assignment PIN_M21 -to button1
+
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name CDF_FILE Chain1.cdf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -1,6 +1,6 @@
-module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA_hSync, VGA_vSync, blank_n);
+module VGA_controller(s_clk, ss, datain, power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA_hSync, VGA_vSync, blank_n);
 
-	input master_clk, data, power;
+	input master_clk, data, power, s_clk, ss, datain;
 	output reg [7:0] VGA_R, VGA_G, VGA_B;
 	
 	output VGA_hSync, VGA_vSync, blank_n, DAC_clk;
@@ -17,126 +17,166 @@ module VGA_controller(power, master_clk, data, DAC_clk, VGA_R, VGA_G, VGA_B, VGA
 	
 	wire pixelOutput;
 	
-	wire [7:0]frame_buffer[39:0][14:0];
-	
-//	assign frame_buffer[30][13]= 224;
-//	assign frame_buffer[31][13]= 225;
-//	assign frame_buffer[30][14]= 226;
-//	assign frame_buffer[31][14]= 227;
-	
-	//78F
-	assign frame_buffer[7][4]= 108;
-	assign frame_buffer[8][4]= 109;
-	assign frame_buffer[7][5]= 110;
-	assign frame_buffer[8][5]= 111;
-	assign frame_buffer[9][4]= 112;
-	assign frame_buffer[10][4]= 113;
-	assign frame_buffer[9][5]= 114;
-	assign frame_buffer[10][5]= 115;
-	assign frame_buffer[11][4]= 144;
-	assign frame_buffer[12][4]= 145;
-	assign frame_buffer[11][5]= 146;
-	assign frame_buffer[12][5]= 147;
-	
-	
-	//12:00
-	assign frame_buffer[26][1]= 84;
-	assign frame_buffer[27][1]= 85;
-	assign frame_buffer[26][2]= 86;
-	assign frame_buffer[27][2]= 87;
-	assign frame_buffer[28][1]= 88;
-	assign frame_buffer[29][1]= 89;
-	assign frame_buffer[28][2]= 90;
-	assign frame_buffer[29][2]= 91;
-	assign frame_buffer[30][1]= 120;
-	assign frame_buffer[31][1]= 121;
-	assign frame_buffer[30][2]= 122;
-	assign frame_buffer[31][2]= 123;
-	assign frame_buffer[32][1]= 80;
-	assign frame_buffer[33][1]= 81;
-	assign frame_buffer[32][2]= 82;
-	assign frame_buffer[33][2]= 83;
-	assign frame_buffer[34][1]= 80;
-	assign frame_buffer[35][1]= 81;
-	assign frame_buffer[34][2]= 82;
-	assign frame_buffer[35][2]= 83;
-	assign frame_buffer[36][1]= 52-43;
-	assign frame_buffer[37][1]= 57-43;
-	
-	//FEB 28 16
-	assign frame_buffer[26][4]= 144;
-	assign frame_buffer[27][4]= 145;
-	assign frame_buffer[26][5]= 146;
-	assign frame_buffer[27][5]= 147;
-	assign frame_buffer[28][4]= 140;
-	assign frame_buffer[29][4]= 141;
-	assign frame_buffer[28][5]= 142;
-	assign frame_buffer[29][5]= 143;
-	assign frame_buffer[30][4]= 128;
-	assign frame_buffer[31][4]= 129;
-	assign frame_buffer[30][5]= 130;
-	assign frame_buffer[31][5]= 131;
-	
-	assign frame_buffer[34][4]= 88;
-	assign frame_buffer[35][4]= 89;
-	assign frame_buffer[34][5]= 90;
-	assign frame_buffer[35][5]= 91;
-	assign frame_buffer[36][4]= 112;
-	assign frame_buffer[37][4]= 113;
-	assign frame_buffer[36][5]= 114;
-	assign frame_buffer[37][5]= 115;
-	
-//	assign frame_buffer[34][4]= 84;
-//	assign frame_buffer[35][4]= 85;
-//	assign frame_buffer[34][5]= 86;
-//	assign frame_buffer[35][5]= 87;
-//	assign frame_buffer[36][4]= 104;
-//	assign frame_buffer[37][4]= 105;
-//	assign frame_buffer[36][5]= 106;
-//	assign frame_buffer[37][5]= 107;
-	
-	//"Quote of the day:
-	assign frame_buffer[7][9]= 38;
-	assign frame_buffer[8][9]= 74;
-	assign frame_buffer[9][9]= 68;
-	assign frame_buffer[10][9]= 73;
-	assign frame_buffer[11][9]= 58;
-	
-	assign frame_buffer[13][9]= 68;
-	assign frame_buffer[14][9]= 102-43;
-	
-	assign frame_buffer[16][9]= 116-43;
-	assign frame_buffer[17][9]= 104-43;
-	assign frame_buffer[18][9]= 101-43;
-	
-	assign frame_buffer[20][9]= 100-43;
-	assign frame_buffer[21][9]= 97-43;
-	assign frame_buffer[22][9]= 121-43;
-	assign frame_buffer[23][9]= 58-43;
-	
-	//Fuck yeah baby.
-	assign frame_buffer[7][11]= 51;
-	assign frame_buffer[8][11]= 70-43;
-	assign frame_buffer[9][11]= 117-43;
-	assign frame_buffer[10][11]= 99-43;
-	assign frame_buffer[11][11]= 107-43;
-	
-	assign frame_buffer[13][11]= 121-43;
-	assign frame_buffer[14][11]= 101-43;
-	assign frame_buffer[15][11]= 97-43;
-	assign frame_buffer[16][11]= 104-43;
-	
-	assign frame_buffer[18][11]= 98-43;
-	assign frame_buffer[19][11]= 97-43;
-	assign frame_buffer[20][11]= 98-43;
-	assign frame_buffer[21][11]= 121-43;
-	assign frame_buffer[22][11]= 52;
-	assign frame_buffer[23][11]=51;
+	reg [7:0]frame_buffer[39:0][14:0];
 	
 	assign DAC_clk = VGA_clk;
 	
 	clk_divider divider1(master_clk, VGA_clk);
 	generate_VGA vga1(VGA_clk, xPixel, yPixel, display_area, VGA_hSync, VGA_vSync, blank_n);
+	reg [7:0]col = 8'b0000000;
+	reg [7:0]row = 8'b0000000;
+	reg [7:0]byte_builder = 8'b0000000;
+	
+	reg [7:0]new_byte = 8'b00000000;
+	reg [7:0]char_to_add = 8'b00000000;
+	
+	reg byte_received;
+	
+	reg [5:0]state = 6'b000100;
+	reg [5:0]next_state;
+	
+//	output  [7:0] LEDR;
+//	output reg [7:0] LEDG = 8'b00000000;
+	parameter A = 6'b000001;
+	parameter M = 6'b000010;
+	parameter C = 6'b000100;
+	parameter D = 6'b001000;
+	parameter E = 6'b010000;
+	parameter F = 6'b100000;
+	
+//	output [6:0]ssOut;
+//	output [6:0]ssOut1;
+//	output [6:0]ssOut2;
+//	assign spi_clk = s_clk;
+//	assign new_byte_out = new_byte[0];
+//	assign new_byte_out1 = new_byte[1];
+//	assign clk_out = new_clk;
+	//shift s_clk
+	reg [2:0]s_clkr;
+	always @(posedge master_clk)
+		 s_clkr <= {s_clkr[1:0], s_clk};
+	wire s_clk_risingedge = (s_clkr[2:1] == 2'b01);  // detect rising edges
+	
+	// shift ss_rise
+	reg [2:0] ss_rise;  
+	always @(posedge master_clk) 
+		ss_rise <= {ss_rise[1:0], ss};
+	wire ss_rising = (ss_rise[2:1] == 2'b01);
+	wire ss_falling = (ss_rise[2:1] == 2'b10);
+	
+	// shift ss
+	reg [2:0] ssr;  
+	always @(posedge master_clk) 
+		ssr <= {ssr[1:0], ss};
+	wire ss_active = ~ssr[1];  // ss is active low
+
+	// shift datain
+	reg [1:0] datainr;  
+	always @(posedge master_clk) 
+		datainr <= {datainr[0], datain};
+	wire MOSI_data = datainr[1];
+	
+
+	
+	// check if slave selected and rising edge
+	always @(posedge master_clk)
+	begin
+		if(byte_received)
+			byte_received <= 0;
+		if(~ss_active)
+		begin
+			if(ss_falling)
+			begin
+				byte_builder[7:0] <= 8'b00000000;
+			end
+		end
+		else
+			if(s_clk_risingedge)
+			begin
+				byte_builder <= {byte_builder[6:0], MOSI_data};
+			end
+		if(ss_rising)
+			byte_received<=1;
+	end
+
+	// update frame_buffer if byte has been received
+	always @(posedge master_clk)
+	begin
+		if(byte_received)
+		begin
+//			LEDG[6] <= ~LEDG[6];
+			new_byte <= byte_builder;
+			state <= next_state;
+		end
+	end
+	
+//	assign LEDR[7:0] = new_byte[7:0];
+//	numToLetter n1(char_to_add, ssOut);
+//	numToLetter n2(byte_builder, ssOut2);
+//	numToLetter n3(new_byte, ssOut1);
+	
+	always@*
+	begin
+	case(state)
+	A:		begin
+				if(new_byte == 8'b11111111) //look for beginning character
+					next_state = M;
+				else
+					next_state = A;
+			end
+	M:		begin
+				if(new_byte < 8'b00101000) //less than 40
+						next_state = C;
+				else
+						next_state = A;
+			end
+	C:		begin
+				if(new_byte < 8'b00001111) //less than 15
+					next_state = D;
+				else
+					next_state = A;
+			end
+	D:		begin
+				next_state = E;
+			end
+	E:		begin
+				next_state = A;
+			end
+	default:	next_state = A;
+	endcase
+	end
+	
+	always@(posedge master_clk)
+	begin
+	case(state)
+	A:		begin
+//				LEDG[0] <= 1;
+//				LEDG[5:1] <= 0;
+			end
+	M:		begin
+//				LEDG[0] <= 0;
+//				LEDG[1] <= 1;
+				col <= new_byte;
+			end
+	C:		begin
+//				LEDG[1] <= 0;
+//				LEDG[2] <= 1;
+				row <= new_byte;
+			end
+	D:		begin
+//				LEDG[2] <= 0;
+//				LEDG[3] <= 1;
+				char_to_add <= new_byte; //grab character
+			end
+	E:		begin
+//				LEDG[3] <= 0;
+//				LEDG[4] <= 1;
+				if(new_byte == 8'b11111110)
+					frame_buffer[col][row] <= char_to_add;
+			end
+	endcase
+	end
+
 	Font_library library1(VGA_clk, frame_buffer[xPixel[9:4]][yPixel[9:5]], xPixel, yPixel, pixelOutput);
 
 	assign R = (display_area && pixelOutput);
