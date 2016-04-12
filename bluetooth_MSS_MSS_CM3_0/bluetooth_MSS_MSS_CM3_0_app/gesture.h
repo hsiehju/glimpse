@@ -215,20 +215,49 @@ int gesture_state_;
 int gesture_motion_;
 int fd_;
 
-int gesture_init();
-void resetGestureParameters();
-void wireWriteDataByte(uint8_t reg, uint8_t val);
-void wireReadDataByte(uint8_t reg, uint8_t val);
+
+
+// SETTER GETTERS
+void enablePower();
+uint8_t getMode();
+void setMode(uint8_t mode, uint8_t enable);
+
+
+// PROXIMITY
+void setProximityGain(uint8_t drive);
+void setProxIntHighThresh(uint8_t threshold);
+void setProxIntLowThresh(uint8_t threshold);
+
+
+// LED
 void setLEDBoost(uint8_t boost);
+void setLEDDrive(uint8_t drive);
+void setLightIntLowThreshold(uint8_t threshold);
+void setLightIntHighThreshold(uint8_t threshold);
+void setAmbientLightGain(uint8_t drive);
+
+// GESTURE
 void setGestureIntEnable(uint8_t enable);
 void setGestureMode(uint8_t mode);
-void enablePower();
-void setMode(uint8_t mode, uint8_t enable);
-uint8_t getMode();
+void setGestureEnterThresh(uint8_t threshold);
+void setGestureExitThresh(uint8_t threshold);
+void setGestureGain(uint8_t gain);
+void setGestureLEDDrive(uint8_t drive);
+void setGestureWaitTime(uint8_t time);
+
+// USER
+int gesture_init();
+void enable_gesture();
+void resetGestureParameters();
 uint8_t isGestureAvailable();
 int readGesture();
 uint8_t processGestureData();
 uint8_t decodeGesture();
-uint8_t wireWriteDataBlock( uint8_t reg, uint8_t *val, unsigned int len);
 
+
+// TEST RAW I2C functions
+void wireWriteDataByte(uint8_t reg, uint8_t val);
+void wireReadDataByte(uint8_t reg, uint8_t* val);
+uint8_t wireWriteDataBlock( uint8_t reg, uint8_t *val, unsigned int len);
+uint8_t wireReadDataBlock(uint8_t reg, uint8_t* val, unsigned int len);
 #endif /* GESTURE_H_ */
