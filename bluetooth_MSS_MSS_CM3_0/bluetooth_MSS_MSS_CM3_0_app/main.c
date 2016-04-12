@@ -53,7 +53,19 @@ int main()
 {
 	MSS_I2C_init(&g_mss_i2c1 , APDS9960_I2C_ADDR , MSS_I2C_PCLK_DIV_256 );
 
-	gesture_init();
+	MSS_GPIO_init();
+
+	MSS_GPIO_config(MSS_GPIO_0, MSS_GPIO_IRQ_EDGE_NEGATIVE);
+
+	MSS_GPIO_enable_irq(MSS_GPIO_0);
+
+	int success = gesture_init();
+	if(success == -1) {
+		success = 0;
+	}
+
+	enable_gesture();
+
 	while (1) {
 	if(isGestureAvailable()) {
 		int gesture = readGesture();
@@ -903,6 +915,15 @@ void update_frame_buffer() {
 
 	enable_interrupts();
 }
+
+void GPIO0_IRQHandler( void ){
+        disable_interrupts();
+
+        MSS_GPIO_clear_irq( MSS_GPIO_0 );
+
+        enable_interrupts();
+}
+
 
 void timer_shutoff() {
 	// after 30 seconds shut off
