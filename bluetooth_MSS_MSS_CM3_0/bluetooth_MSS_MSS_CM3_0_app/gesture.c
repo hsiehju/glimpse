@@ -27,19 +27,87 @@ int gesture_init () {
 	gesture_state_ = 0;
 	gesture_motion_ = DIR_NONE;
 
-	/* Enable gesture mode
-	Set ENABLE to 0 (power off)
-	Set WTIME to 0xFF
-	Set AUX to LED_BOOST_300
-	Enable PON, WEN, PEN, GEN in ENABLE
-	*/
+
+	uint8_t id;
+	wireReadDataByte(APDS9960_ID, &id);
+
+	if(!(id == APDS9960_ID_1) || (id == APDS9960_ID_2)) {
+		return -1;
+	}
+
+	setMode(ALL, OFF);
+
+	wireWriteDataByte(APDS9960_ATIME, DEFAULT_ATIME);
+
+	wireWriteDataByte(APDS9960_WTIME, DEFAULT_WTIME);
+
+	wireWriteDataByte(APDS9960_PPULSE, DEFAULT_PROX_PPULSE);
+
+	wireWriteDataByte(APDS9960_POFFSET_UR, DEFAULT_POFFSET_UR);
+
+	wireWriteDataByte(APDS9960_POFFSET_DL, DEFAULT_POFFSET_DL);
+
+	wireWriteDataByte(APDS9960_CONFIG1, DEFAULT_CONFIG1);
+
+	setLEDDrive(DEFAULT_LDRIVE);
+
+	setProximityGain(DEFAULT_PGAIN);
+
+	setAmbientLightGain(DEFAULT_AGAIN);
+
+	setProxIntLowThresh(DEFAULT_PILT);
+
+	setProxIntHighThresh(DEFAULT_PIHT);
+
+	setLightIntLowThreshold(DEFAULT_AILT);
+
+	setLightIntHighThreshold(DEFAULT_AIHT);
+
+	wireWriteDataByte(APDS9960_PERS, DEFAULT_PERS);
+
+	wireWriteDataByte(APDS9960_CONFIG2, DEFAULT_CONFIG2);
+
+	wireWriteDataByte(APDS9960_CONFIG3, DEFAULT_CONFIG3);
+
+	setGestureEnterThresh(DEFAULT_GPENTH);
+
+	setGestureExitThresh(DEFAULT_GEXTH);
+
+	wireWriteDataByte(APDS9960_GCONF1, DEFAULT_GCONF1);
+
+	setGestureGain(DEFAULT_GGAIN);
+
+	setGestureLEDDrive(DEFAULT_GLDRIVE);
+
+	setGestureWaitTime(DEFAULT_GWTIME);
+
+	wireWriteDataByte(APDS9960_GOFFSET_U, DEFAULT_GOFFSET);
+
+	wireWriteDataByte(APDS9960_GOFFSET_D, DEFAULT_GOFFSET);
+
+	wireWriteDataByte(APDS9960_GOFFSET_L, DEFAULT_GOFFSET);
+
+	wireWriteDataByte(APDS9960_GOFFSET_R, DEFAULT_GOFFSET);
+
+	wireWriteDataByte(APDS9960_GPULSE, DEFAULT_GPULSE);
+
+	wireWriteDataByte(APDS9960_GCONF3, DEFAULT_GCONF3);
+
+	setGestureIntEnable(DEFAULT_GIEN);
+
+	return 0;
+}
+
+
+
+void enable_gesture() {
 	resetGestureParameters();
+
 	wireWriteDataByte(APDS9960_WTIME, 0xFF);
+
 	wireWriteDataByte(APDS9960_PPULSE, DEFAULT_GESTURE_PPULSE);
 
-
 	setLEDBoost(LED_BOOST_300);
-
 
 	setGestureIntEnable(1);
 
@@ -52,10 +120,235 @@ int gesture_init () {
 	setMode(PROXIMITY, 1);
 
 	setMode(GESTURE, 1);
-
-	return 0;
 }
 
+
+////////////////////
+//////PROXIMITY ////
+////////////////////
+void setProximityGain(uint8_t drive) {
+	uint8_t val;
+
+	wireReadDataByte(APDS9960_CONTROL, &val);
+
+	drive &= 0b00000011;
+	drive = drive << 2;
+	val &= 0b11110011;
+	val |= drive;
+
+	wireWriteDataByte(APDS9960_CONTROL, val);
+}
+void setProxIntHighThresh(uint8_t threshold) {
+	wireWriteDataByte(APDS9960_PIHT, threshold);
+}
+
+void setProxIntLowThresh(uint8_t threshold) {
+	wireWriteDataByte(APDS9960_PILT, threshold);
+}
+
+
+
+
+
+
+
+////////////////////
+////// LED /////////
+////////////////////
+void setLEDBoost(uint8_t boost){
+	uint8_t val;
+
+	/* Read value from CONFIG2 register */
+	wireReadDataByte(APDS9960_CONFIG2, &val);
+
+	/* Set bits in register to given value */
+	boost &= 0b00000011;
+	boost = boost << 4;
+	val &= 0b11001111;
+	val |= boost;
+
+	/* Write register value back into CONFIG2 register */
+	wireWriteDataByte(APDS9960_CONFIG2, val);
+}
+
+void setLEDDrive(uint8_t drive) {
+	uint8_t val;
+
+	wireReadDataByte(APDS9960_CONTROL, &val);
+
+	drive &= 0b00000011;
+	drive = drive << 6;
+	val &= 0b00111111;
+	val |= drive;
+
+	wireWriteDataByte(APDS9960_CONTROL, val);
+}
+
+void setLightIntLowThreshold(uint8_t threshold) {
+	uint8_t val_low;
+	uint8_t val_high;
+
+	val_low = threshold & 0x00FF;
+	val_high = (threshold & 0xFF00) >> 8;
+
+	wireWriteDataByte(APDS9960_AILTL, val_low);
+
+	wireWriteDataByte(APDS9960_AILTH, val_high);
+}
+void setLightIntHighThreshold(uint8_t threshold) {
+	uint8_t val_low;
+	uint8_t val_high;
+
+	val_low = threshold & 0x00FF;
+	val_high = (threshold & 0xFF00) >> 8;
+
+	wireWriteDataByte(APDS9960_AIHTL, val_low);
+
+	wireWriteDataByte(APDS9960_AIHTH, val_high);
+}
+
+void setAmbientLightGain(uint8_t drive) {
+	uint8_t val;
+
+	wireReadDataByte(APDS9960_CONTROL, &val);
+
+	drive &= 0b00000011;
+	val &= 0b11111100;
+	val |= drive;
+
+	wireWriteDataByte(APDS9960_CONTROL, val);
+}
+
+
+
+
+
+////////////////////
+////// GESTURE /////
+////////////////////
+
+void setGestureIntEnable(uint8_t enable) {
+	uint8_t val;
+
+	wireReadDataByte(APDS9960_GCONF4, &val);
+
+	enable &= 0b00000001;
+	enable = enable << 1;
+	val &= 0b11111101;
+	val |= enable;
+
+	wireWriteDataByte(APDS9960_GCONF4, val);
+}
+
+void setGestureMode(uint8_t mode) {
+	uint8_t val;
+
+	/* Read value from GCONF4 register */
+	wireReadDataByte(APDS9960_GCONF4, &val);
+
+	/* Set bits in register to given value */
+	mode &= 0b00000001;
+	val &= 0b11111110;
+	val |= mode;
+
+	/* Write register value back into GCONF4 register */
+	wireWriteDataByte(APDS9960_GCONF4, val);
+}
+
+void setGestureEnterThresh(uint8_t threshold) {
+	wireWriteDataByte(APDS9960_GPENTH, threshold);
+}
+void setGestureExitThresh(uint8_t threshold) {
+	wireWriteDataByte(APDS9960_GEXTH, threshold);
+}
+
+void setGestureGain(uint8_t gain) {
+	uint8_t val;
+
+	wireReadDataByte(APDS9960_GCONF2, &val);
+
+	gain &= 0b00000011;
+	gain = gain << 5;
+	val &= 0b10011111;
+	val |= gain;
+
+	wireWriteDataByte(APDS9960_GCONF2, val);
+}
+void setGestureLEDDrive(uint8_t drive) {
+	uint8_t val;
+
+	wireReadDataByte(APDS9960_GCONF2, &val);
+
+	drive &= 0b00000011;
+	drive = drive << 3;
+	val &= 0b11100111;
+	val |= drive;
+
+	wireWriteDataByte(APDS9960_GCONF2, val);
+
+}
+void setGestureWaitTime(uint8_t time) {
+	uint8_t val;
+
+	wireReadDataByte(APDS9960_GCONF2, &val);
+
+	time &= 0b00000111;
+	val &= 0b11111000;
+	val |= time;
+
+	wireWriteDataByte(APDS9960_GCONF2, val);
+}
+
+
+
+
+
+// RAW I2C FUNCTIONS
+void wireWriteDataByte(uint8_t reg, uint8_t val) {
+
+	uint8_t transmit_buf[] = {reg, val};
+
+	MSS_I2C_write(&g_mss_i2c1, APDS9960_I2C_ADDR, transmit_buf, sizeof(transmit_buf), MSS_I2C_RELEASE_BUS);
+	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
+}
+
+void wireReadDataByte(uint8_t reg, uint8_t* val) {
+
+	MSS_I2C_write(&g_mss_i2c1, APDS9960_I2C_ADDR, &reg, sizeof(reg), MSS_I2C_RELEASE_BUS);
+	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
+
+	uint8_t recieve_buf;
+
+	MSS_I2C_read(&g_mss_i2c1, APDS9960_I2C_ADDR, &recieve_buf, sizeof(recieve_buf), MSS_I2C_RELEASE_BUS);
+	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
+
+	*val = recieve_buf;
+}
+
+uint8_t wireWriteDataBlock(uint8_t reg, uint8_t* val, unsigned int len){
+	MSS_I2C_write(&g_mss_i2c1, APDS9960_I2C_ADDR, &reg, sizeof(reg), MSS_I2C_RELEASE_BUS);
+	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
+
+	MSS_I2C_write(&g_mss_i2c1, APDS9960_I2C_ADDR, val, len, MSS_I2C_RELEASE_BUS);
+	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
+}
+
+
+uint8_t wireReadDataBlock(uint8_t reg, uint8_t* val, unsigned int len){
+	MSS_I2C_write(&g_mss_i2c1, APDS9960_I2C_ADDR, &reg, sizeof(reg), MSS_I2C_RELEASE_BUS);
+	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
+
+
+	MSS_I2C_read(&g_mss_i2c1, APDS9960_I2C_ADDR, val, len, MSS_I2C_RELEASE_BUS);
+	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
+
+	return len;
+}
+
+
+
+
+// User
 void resetGestureParameters() {
 	gesture_data_.index = 0;
 	gesture_data_.total_gestures = 0;
@@ -73,61 +366,6 @@ void resetGestureParameters() {
 	gesture_motion_ = DIR_NONE;
 }
 
-void wireWriteDataByte(uint8_t reg, uint8_t val) {
-	MSS_I2C_write(&g_mss_i2c1, reg, &val, sizeof(val), MSS_I2C_RELEASE_BUS);
-	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
-}
-
-void wireReadDataByte(uint8_t reg, uint8_t val) {
-	MSS_I2C_read(&g_mss_i2c1, reg, &val, sizeof(val), MSS_I2C_RELEASE_BUS);
-	MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
-}
-
-void setLEDBoost(uint8_t boost){
-	uint8_t val;
-
-	/* Read value from CONFIG2 register */
-	wireReadDataByte(APDS9960_CONFIG2, val);
-
-	/* Set bits in register to given value */
-	boost &= 0b00000011;
-	boost = boost << 4;
-	val &= 0b11001111;
-	val |= boost;
-
-	/* Write register value back into CONFIG2 register */
-	wireWriteDataByte(APDS9960_CONFIG2, val);
-}
-
-void setGestureIntEnable(uint8_t enable) {
-	uint8_t val;
-
-	/* Read value from GCONF4 register */
-
-	/* Set bits in register to given value */
-	enable &= 0b00000001;
-	enable = enable << 1;
-	val &= 0b11111101;
-	val |= enable;
-
-	/* Write register value back into GCONF4 register */
-	wireWriteDataByte(APDS9960_GCONF4, val);
-
-}
-void setGestureMode(uint8_t mode) {
-	uint8_t val;
-
-	/* Read value from GCONF4 register */
-	wireReadDataByte(APDS9960_GCONF4, val);
-
-	/* Set bits in register to given value */
-	mode &= 0b00000001;
-	val &= 0b11111110;
-	val |= mode;
-
-	/* Write register value back into GCONF4 register */
-	wireWriteDataByte(APDS9960_GCONF4, val);
-}
 void enablePower() {
 	setMode(POWER, 1);
 }
@@ -136,6 +374,9 @@ void setMode(uint8_t mode, uint8_t enable) {
 
 	/* Read current ENABLE register */
 	reg_val = getMode();
+	if(reg_val == ERROR) {
+		return;
+	}
 
 	/* Change bit(s) in ENABLE register */
 	enable = enable & 0x01;
@@ -161,7 +402,7 @@ uint8_t getMode() {
 	uint8_t enable_value;
 
 	/* Read current ENABLE register */
-	wireReadDataByte(APDS9960_ENABLE, enable_value);
+	wireReadDataByte(APDS9960_ENABLE, &enable_value);
 
 	return enable_value;
 }
@@ -170,7 +411,7 @@ uint8_t isGestureAvailable() {
 	uint8_t val;
 
 	/* Read value from GSTATUS register */
-	wireReadDataByte(APDS9960_GSTATUS, val);
+	wireReadDataByte(APDS9960_GSTATUS, &val);
 
 
 	/* Shift and mask out GVALID bit */
@@ -203,14 +444,14 @@ int readGesture() {
 		//sleep(2000);
 
 		/* Get the contents of the STATUS register. Is data still valid? */
-		wireReadDataByte(APDS9960_GSTATUS, gstatus);
+		wireReadDataByte(APDS9960_GSTATUS, &gstatus);
 
 
 		/* If we have valid data, read in FIFO */
 		if( (gstatus & APDS9960_GVALID) == APDS9960_GVALID ) {
 
 			/* Read the current FIFO level */
-			wireReadDataByte(APDS9960_GFLVL, fifo_level);
+			wireReadDataByte(APDS9960_GFLVL, &fifo_level);
 
 
 #if DEBUG
@@ -220,9 +461,7 @@ int readGesture() {
 
 			/* If there's stuff in the FIFO, read it into our data block */
 			if( fifo_level > 0) {
-				bytes_read = wireReadDataBlock(  APDS9960_GFIFO_U,
-				(uint8_t*)fifo_data,
-				(fifo_level * 4) );
+				bytes_read = wireReadDataBlock(  APDS9960_GFIFO_U,(uint8_t*)fifo_data,(fifo_level * 4) );
 				if( bytes_read == -1 ) {
 					return ERROR;
 				}
@@ -238,14 +477,10 @@ int readGesture() {
 				/* If at least 1 set of data, sort the data into U/D/L/R */
 				if( bytes_read >= 4 ) {
 					for( i = 0; i < bytes_read; i += 4 ) {
-						gesture_data_.u_data[gesture_data_.index] = \
-						fifo_data[i + 0];
-						gesture_data_.d_data[gesture_data_.index] = \
-						fifo_data[i + 1];
-						gesture_data_.l_data[gesture_data_.index] = \
-						fifo_data[i + 2];
-						gesture_data_.r_data[gesture_data_.index] = \
-						fifo_data[i + 3];
+						gesture_data_.u_data[gesture_data_.index] = fifo_data[i + 0];
+						gesture_data_.d_data[gesture_data_.index] = fifo_data[i + 1];
+						gesture_data_.l_data[gesture_data_.index] = fifo_data[i + 2];
+						gesture_data_.r_data[gesture_data_.index] = fifo_data[i + 3];
 						gesture_data_.index++;
 						gesture_data_.total_gestures++;
 					}
@@ -277,7 +512,7 @@ int readGesture() {
 		} else {
 
 			/* Determine best guessed gesture and clean up */
-			//delay(FIFO_PAUSE_TIME);
+			// delay(FIFO_PAUSE_TIME);
 			decodeGesture();
 			motion = gesture_motion_;
 #if DEBUG
@@ -313,16 +548,12 @@ uint8_t processGestureData() {
 	}
 
 	/* Check to make sure our data isn't out of bounds */
-	if( (gesture_data_.total_gestures <= 32) && \
-			(gesture_data_.total_gestures > 0) ) {
+	if( (gesture_data_.total_gestures <= 32) && (gesture_data_.total_gestures > 0) ) {
 
 		/* Find the first value in U/D/L/R above the threshold */
 		for( i = 0; i < gesture_data_.total_gestures; i++ ) {
-			if( (gesture_data_.u_data[i] > GESTURE_THRESHOLD_OUT) &&
-					(gesture_data_.d_data[i] > GESTURE_THRESHOLD_OUT) &&
-					(gesture_data_.l_data[i] > GESTURE_THRESHOLD_OUT) &&
-					(gesture_data_.r_data[i] > GESTURE_THRESHOLD_OUT) ) {
-
+			if( (gesture_data_.u_data[i] > GESTURE_THRESHOLD_OUT) && (gesture_data_.d_data[i] > GESTURE_THRESHOLD_OUT) &&
+				(gesture_data_.l_data[i] > GESTURE_THRESHOLD_OUT) && (gesture_data_.r_data[i] > GESTURE_THRESHOLD_OUT) ) {
 				u_first = gesture_data_.u_data[i];
 				d_first = gesture_data_.d_data[i];
 				l_first = gesture_data_.l_data[i];
@@ -533,14 +764,5 @@ uint8_t decodeGesture() {
 		return 0;
 	}
 
-	return 1;
-}
-
-uint8_t wireWriteDataBlock(uint8_t reg, uint8_t *val, unsigned int len) {
-	unsigned char i = 0;
-	for(i = 0; i < len; ++i) {
-		MSS_I2C_write(&g_mss_i2c1, reg, val[i], len, MSS_I2C_RELEASE_BUS);
-		MSS_I2C_wait_complete(&g_mss_i2c1, MSS_I2C_NO_TIMEOUT);
-	}
 	return 1;
 }
