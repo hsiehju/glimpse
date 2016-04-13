@@ -10,6 +10,14 @@
 
 timer *root = 0;
 
+void disable_interrupts(void) {
+    asm("cpsid i");
+}
+
+void enable_interrupts(void) {
+    asm("cpsie i");
+}
+
 //used to initialize hardware
 void start_hardware_timer(uint32_t period){
     MSS_TIM1_init(MSS_TIMER_ONE_SHOT_MODE);
@@ -62,12 +70,12 @@ void startTimerOneshot(handler_t handler, uint32_t period){
 //with new down count
 void update_timers(void){
     timer* current = root;
-    
+
     while (current->next) {
         current->next->time -= root->time;
         current = current->next;
     }
-    
+
     timer* temp_root = root;
     root = root->next;
     if (temp_root->mode == 1){
@@ -77,7 +85,7 @@ void update_timers(void){
     else {
         free(temp_root);
     }
-    
+
     while(root && root->time == 0){
         root->handler();
         update_timers();
@@ -92,107 +100,4 @@ void Timer1_IRQHandler( void ){
     MSS_TIM1_start();
 }
 
-// update every 1 second
-void update_time() {
-    disable_interrupts();
-    
-    uint32_t time_sec = 0;
-    uint32_t time_min = 0;
-    uint32_t time_hour = 0;
-    
-    time_hour += atoi(time);
-    time_min += atoi(time + 3);
-    time_sec += atoi(time + 6);
-    
-    if(time_sec == 59) {
-        time_sec = 0;
-        if(time_min == 59) {
-            time_min = 0;
-            if(time_hour == 12) {
-                time_hour = 0;
-            }
-            else {
-                time_hour++;
-            }
-        }
-        else {
-            time_min++;
-        }
-    }
-    else {
-        time_sec++;
-    }
-    
-    if(time_hour <= 9) {
-        time[0] = '0';
-        time[1] = time_hour + '0';
-        time[2] = ':';
-    }
-    else {
-        time[0] = '1';
-        time[1] = time_hour % 10 + '0';
-        time[2] = ':';
-    }
-    
-    if(time_min <= 9) {
-        time[3] = '0';
-        time[4] = time_min % 10 + '0';
-        time[5] = ':';
-    }
-    else if(time_min <= 19) {
-        time[3] = '1';
-        time[4] = time_min % 10 + '0';
-        time[5] = ':';
-    }
-    else if(time_min <= 29) {
-        time[3] = '2';
-        time[4] = time_min % 10 + '0';
-        time[5] = ':';
-    }
-    else if(time_min <= 39) {
-        time[3] = '3';
-        time[4] = time_min % 10 + '0';
-        time[5] = ':';
-    }
-    else if(time_min <= 49) {
-        time[3] = '4';
-        time[4] = time_min % 10 + '0';
-        time[5] = ':';
-    }
-    
-    else if(time_min <= 59) {
-        time[3] = '5';
-        time[4] = time_min % 10 + '0';
-        time[5] = ':';
-    }
-    
-    
-    if(time_sec <= 9) {
-        time[6] = '0';
-        time[7] = time_sec + '0';
-    }
-    else if(time_sec <= 19) {
-        time[6] = '1';
-        time[7] = time_sec % 10 + '0';
-    }
-    else if(time_sec <= 29) {
-        time[6] = '2';
-        time[7] = time_sec % 10 + '0';
-    }
-    else if(time_sec <= 39) {
-        time[6] = '3';
-        time[7] = time_sec % 10 + '0';
-    }
-    else if(time_sec <= 49) {
-        time[6] = '4';
-        time[7] = time_sec % 10 + '0';
-    }
-    
-    else if(time_sec <= 59) {
-        time[6] = '5';
-        time[7] = time_sec % 10 + '0';
-    }
-    
-    
-    enable_interrupts();
-}
+

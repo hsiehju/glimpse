@@ -8,6 +8,8 @@
 #ifndef GESTURE_H_
 #define GESTURE_H_
 
+#include <inttypes.h>
+
 /* APDS-9960 I2C address */
 #define APDS9960_I2C_ADDR       0x39
 
@@ -172,34 +174,34 @@
 
 /* Direction definitions */
 enum {
-    DIR_NONE,
-    DIR_LEFT,
-    DIR_RIGHT,
-    DIR_UP,
-    DIR_DOWN,
-    DIR_NEAR,
-    DIR_FAR,
-    DIR_ALL
+	DIR_NONE,
+	DIR_LEFT,
+	DIR_RIGHT,
+	DIR_UP,
+	DIR_DOWN,
+	DIR_NEAR,
+	DIR_FAR,
+	DIR_ALL
 };
 
 /* State definitions */
 enum {
-    NA_STATE,
-    NEAR_STATE,
-    FAR_STATE,
-    ALL_STATE
+	NA_STATE,
+	NEAR_STATE,
+	FAR_STATE,
+	ALL_STATE
 };
 
 /* Container for gesture data */
 typedef struct gesture_data_type {
-    uint8_t u_data[32];
-    uint8_t d_data[32];
-    uint8_t l_data[32];
-    uint8_t r_data[32];
-    uint8_t index;
-    uint8_t total_gestures;
-    uint8_t in_threshold;
-    uint8_t out_threshold;
+	uint8_t u_data[32];
+	uint8_t d_data[32];
+	uint8_t l_data[32];
+	uint8_t r_data[32];
+	uint8_t index;
+	uint8_t total_gestures;
+	uint8_t in_threshold;
+	uint8_t out_threshold;
 } gesture_data_type;
 
 
@@ -219,9 +221,9 @@ int fd_;
 
 // SETTER GETTERS
 void enablePower();
-uint8_t getMode();
+void handle_gesture();
 void setMode(uint8_t mode, uint8_t enable);
-
+uint8_t getMode();
 
 // PROXIMITY
 void setProximityGain(uint8_t drive);
@@ -253,6 +255,7 @@ uint8_t isGestureAvailable();
 int readGesture();
 uint8_t processGestureData();
 uint8_t decodeGesture();
+void handle_gesture();
 
 
 // TEST RAW I2C functions

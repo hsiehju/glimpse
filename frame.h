@@ -1,18 +1,22 @@
-//
-//  frame.h
-//  test
-//
-//  Created by Justin Hsieh on 4/12/16.
-//  Copyright (c) 2016 Justin Hsieh. All rights reserved.
-//
+/*
+ * frame.h
+ *
+ *  Created on: Apr 12, 2016
+ *      Author: hsiehju
+ */
 
 #ifndef FRAME_H_
 #define FRAME_H_
 
 #include "gesture.h"
 #include "mytimer.h"
-#include "frame.h"
+#include "globals.h"
 
+
+#define BLANKPAGE 0
+#define MAINPAGE 1
+#define TODOPAGE 2
+#define SONGPAGE 3
 
 
 void update_page(uint8_t page);
@@ -36,6 +40,6 @@ void update_songname();
 
 void update_songbuttons();
 
+void timer_turnoff();
 
-
-#endif
+#endif /* FRAME_H_ */

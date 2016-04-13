@@ -1,20 +1,17 @@
-//
-//  globals.h
-//  test
-//
-//  Created by Justin Hsieh on 4/12/16.
-//  Copyright (c) 2016 Justin Hsieh. All rights reserved.
-//
+/*
+ * globals.h
+ *
+ *  Created on: Apr 12, 2016
+ *      Author: hsiehju
+ */
 
-#ifndef __test__globals__
-#define __test__globals__
+#ifndef GLOBALS_H_
+#define GLOBALS_H_
 
-#include <stdio.h>
+#include <inttypes.h>
 
 #define RX_BUFF_SIZE    64
 #define TX_BUFF_SIZE    64
-
-extern char ascii_to_value(char ascii);
 
 // FRAME BUFFER
 extern char frame_buffer[40][15];
@@ -46,4 +43,8 @@ extern char artist[35];
 // 3 song page
 extern uint8_t page_selected;
 
-#endif
+void GPIO0_IRQHandler();
+
+char ascii_to_value(char ascii);
+
+#endif /* GLOBALS_H_ */
