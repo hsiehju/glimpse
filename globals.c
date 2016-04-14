@@ -17,24 +17,24 @@ char frame_buffer[40][15];
 char time[9] = "03:56:00";
 char date[10] = "JAN 01,16";
 char temp[4] = "73F";
-char icon[6][6];
 uint8_t icon_selected = 0;
+const char quote_title[17] = "QUOTE OF THE DAY";
 char quotes_lib[5][93];
-uint8_t num_of_quotes = 0;
-uint8_t quotes_full = 0;
+uint8_t quote_selected = 0;
 
 // TODO LIST
+const char todo_title[10] = "TODO LIST";
 char todo_list[5][35];
+char todo_check[5];
 uint8_t num_of_tasks = 0;
 uint8_t tasks_full = 0;
 
 // SONG
-char song_name[35];
-char artist[35];
+char song_name[40];
+char artist[40];
 
 // INT
 uint8_t gesture_available = 0;
-
 int gesture = -1;
 
 
@@ -51,6 +51,9 @@ void GPIO0_IRQHandler(){
 }
 
 char ascii_to_value(char ascii) {
+	if(ascii == 32) {
+		return 0;
+	}
     if(43 <= ascii && ascii <= 122) {
         return ascii - 43;
     }

@@ -22,12 +22,14 @@ extern char date[10];
 extern char temp[4];
 extern char icon[6][6];
 extern uint8_t icon_selected;
+extern const char quote_title[16];
 extern char quotes_lib[5][93];
-extern uint8_t num_of_quotes;
-extern uint8_t quotes_full;
+extern uint8_t quote_selected;
 
 // TODO LIST
+extern const char todo_title[10];
 extern char todo_list[5][35];
+extern char todo_check[5];
 extern uint8_t num_of_tasks;
 extern uint8_t tasks_full;
 

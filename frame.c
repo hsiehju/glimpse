@@ -61,7 +61,6 @@ void update_frame_buffer() {
 		// WEATHER ICON
 		// FRAMEBUFFER start (2, 1)
 		icon_to_fb(icon_selected);
-
 		// TIME
 		// FRAMEBUFFER start (26, 1)
 		large_number_to_fb(time[0], 26, 1);
@@ -73,25 +72,33 @@ void update_frame_buffer() {
 		frame_buffer[37][1] = ascii_to_value(time[7]);
 		// DATE
 		// FRAMEBUFFER start (29,3)
-		frame_buffer[29][3] = date[0];
-		frame_buffer[30][3] = date[1];
-		frame_buffer[31][3] = date[2];
-		frame_buffer[32][3] = date[3];
-		frame_buffer[33][3] = date[4];
-		frame_buffer[34][3] = date[5];
-		frame_buffer[35][3] = date[6];
-		frame_buffer[36][3] = date[7];
-		frame_buffer[37][3] = date[8];
-
+		frame_buffer[29][3] = ascii_to_value(date[0]);
+		frame_buffer[30][3] = ascii_to_value(date[1]);
+		frame_buffer[31][3] = ascii_to_value(date[2]);
+		frame_buffer[32][3] = ascii_to_value(date[3]);
+		frame_buffer[33][3] = ascii_to_value(date[4]);
+		frame_buffer[34][3] = ascii_to_value(date[5]);
+		frame_buffer[35][3] = ascii_to_value(date[6]);
+		frame_buffer[36][3] = ascii_to_value(date[7]);
+		frame_buffer[37][3] = ascii_to_value(date[8]);
 		// TEMP
 		// FRAMEBUFFER start (9,4)
 		large_number_to_fb(temp[0], 9, 4);
 		large_number_to_fb(temp[1], 11, 4);
-		frame_buffer[13][4] = ascii_to_value(temp[2]);
+		frame_buffer[13][4] = ascii_to_value(temp[2]);   
+        // QUOTE
+        // FRAMEBUFFER start (6, 8)
+        uint8_t i;
+        for(i = QUOTE_T_START_X; i < QUOTE_T_END_X; ++i) {
+            frame_buffer[i][QUOTE_T_Y] = quote_title[i - QUOTE_T_START_X];
+        }
+        // finish quote
 	}
+    // TODO LIST
 	else if(page_selected  == 2) {
 
 	}
+    // SONGPAGE
 	else if(page_selected == 3) {
 
 	}
@@ -256,35 +263,6 @@ void update_time(void) {
     enable_interrupts();
 }
 
-void update_weather_icon(uint8_t icon) {
-	switch(icon) {
-		case CLOUDY: {
-			icon_selected = CLOUDY;
-		}
-		case MOON: {
-			icon_selected = MOON;
-		}
-		case PARTLY_CLOUDY: {
-			icon_selected = PARTLY_CLOUDY;
-		}
-		case RAINY: {
-			icon_selected = RAINY;
-		}
-		case SNOWY: {
-			icon_selected = SNOWY;
-		}
-		case SUNNY: {
-			icon_selected = SUNNY;
-		}
-		default: {
-			icon_selected = SUNNY;
-		}
-	}
-}
-
-void update_quote() {
-
-}
 
 void update_temperature() {
 

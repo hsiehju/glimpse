@@ -22,15 +22,10 @@ int main()
 	size_t rx_size = 0;
 	size_t tx_size = 0;
 
-	uint8_t msg[RX_BUFF_SIZE] = "";
-
-
     MSS_UART_init(&g_mss_uart0, MSS_UART_9600_BAUD, MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT);
     MSS_UART_init(&g_mss_uart1, MSS_UART_9600_BAUD, MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT);
 
     MSS_I2C_init(&g_mss_i2c1 , APDS9960_I2C_ADDR , MSS_I2C_PCLK_DIV_256 );
-
-
 
 	MSS_SPI_init( &g_mss_spi1 );
 	MSS_SPI_configure_master_mode(&g_mss_spi1, MSS_SPI_SLAVE_0, MSS_SPI_MODE1, MSS_SPI_PCLK_DIV_256, frame_size);
@@ -57,6 +52,11 @@ int main()
 		}
 	}
 
+    // TODO CHECK INITIALIZATION
+    for(x = 0; x < 5; ++x) {
+        todo_check[x] = 0;
+    }
+
 	startTimerContinuous(&update_frame_buffer, 10000); //10us
 	startTimerContinuous(&update_time, 90000000);	//1 second
 	startTimerContinuous(&update_temperature, 500000000);	//5 second
@@ -79,14 +79,17 @@ int main()
 
     // BLUETOOTH polling
     while (1) {
+
+        // GESTURE
     	if(gesture_available == 1) {
 			handle_gesture();
 			gesture_available = 0;
 		}
 
+        // UPDATE FRAME
     	send_frame();
 
-
+        // ACCEPT COMMANDS
         rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff) );
         if(rx_size > 0){
             MSS_UART_polled_tx( &g_mss_uart0, rx_buff, rx_size);
@@ -94,6 +97,8 @@ int main()
 
             // MAIN PAGE
             if('M' == mode) {
+                char msg = 'A';
+                MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
                 char command;
                 char full_string[37];
                 int index = 0;
@@ -103,6 +108,9 @@ int main()
 							handle_gesture();
 							gesture_available = 0;
 						}
+
+                        send_frame();
+
                         rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff));
 
                         if(rx_size > 0) {
@@ -119,15 +127,13 @@ int main()
                     }
 
                     command = full_string[0];
-
+                    uint8_t error = 0;
                     // time
                     if(command == 't') {
-                    	uint8_t error = 0;
+                    	
                         if((full_string[2] - '0') != 1 && (full_string[2] - '0') != 0) {
                             char msg = 'E';
-                            disable_interrupts();
                             MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
-                            enable_interrupts();
                             error = 1;
                         }
 
@@ -157,32 +163,153 @@ int main()
 							time[6] = full_string[8];
 							time[7] = full_string[9];
 							enable_interrupts();
+                            char msg = 'A';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
                         }
                     }
                     // date
                     else if(command == 'd') {
+                        if((full_string[0] < 65  || full_string[0] > 90) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
 
+                        else if((full_string[1] < 65  || full_string[2] > 90) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+
+                        else if((full_string[2] < 65  || full_string[2] > 90) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+
+                        else if((full_string[4] - '0') != 1 && (full_string[4] - '0') != 0) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+
+                        else if((full_string[5] - '0') != 0 && (full_string[5] - '0') != 1 &&
+                           (full_string[5] - '0') != 2 && (full_string[5] - '0') != 3 &&
+                           (full_string[5] - '0') != 4 && (full_string[5] - '0') != 5 &&
+                           (full_string[5] - '0') != 6 && (full_string[5] - '0') != 7 &&
+                           (full_string[5] - '0') != 8 && (full_string[5] - '0') != 9) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+
+                        else if(full_string[6] != ' ') {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+
+                        else if((full_string[7] - '0') != 0 && (full_string[7] - '0') != 1 &&
+                           (full_string[7] - '0') != 2 && (full_string[7] - '0') != 3) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+
+
+                        else if((full_string[8] - '0') != 0 && (full_string[8] - '0') != 1 &&
+                           (full_string[8] - '0') != 2 && (full_string[8] - '0') != 3 &&
+                           (full_string[8] - '0') != 4 && (full_string[8] - '0') != 5 &&
+                           (full_string[8] - '0') != 6 && (full_string[8] - '0') != 7 &&
+                           (full_string[8] - '0') != 8 && (full_string[8] - '0') != 9) {                            
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+                        if(error == 0) {
+                            disable_interrupts();
+                            date[0] = full_string[2];
+                            date[1] = full_string[3];
+                            date[2] = full_string[4];
+
+                            date[4] = full_string[6];
+                            date[5] = full_string[7];
+
+                            date[7] = full_string[9];
+                            date[8] = full_string[10];
+                            enable_interrupts();
+                            char msg = 'A';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                        }
                     }
                     // type of weather
                     else if(command == 'w') {
+                        if((full_string[2] - '0') != 0 && (full_string[2] - '0') != 1 &&
+                           (full_string[2] - '0') != 2 && (full_string[2] - '0') != 3 &&
+                           (full_string[2] - '0') != 4 && (full_string[2] - '0') != 5 &&
+                           (full_string[2] - '0') != 6 && (full_string[2] - '0') != 7 &&
+                           (full_string[2] - '0') != 8 && (full_string[2] - '0') != 9) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+                        else if (full_string[1] != ' ') {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+                        if(error == 0) {
+                            disable_interrupts();
+                            icon_selected = full_string[2] - '0';
+                            enable_interrupts();
+                            char msg = 'A';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                        }
+                    }
+                    // switch quote
+                    else if(command == 's') {
+                        if((full_string[2] - '0') != 0 && (full_string[2] - '0') != 1 &&
+                           (full_string[2] - '0') != 2 && (full_string[2] - '0') != 3 &&
+                           (full_string[2] - '0') != 4) {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
+                        else if (full_string[1] != ' ') {
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                            error = 1;
+                        }
 
+                        if(error == 0) {
+                            disable_interrupts();
+                            quote_selected = full_string[2] - '0');
+                            enable_interrupts();
+                            char msg = 'A';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+                        }
                     }
                     else if(command == 'q') {
                         break;
                     }
                 }
             }
-
-            if(mode == 'T') {
+            // TODO PAGE
+            else if (mode == 'T') {
+                char msg = 'A';
+                MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
                 char command;
                 char full_string[37];
                 int index = 0;
                 while (1) {
                     while(1) {
-                    	if(gesture_available == 1) {
-							handle_gesture();
-							gesture_available = 0;
-						}
+                        if(gesture_available == 1) {
+                            handle_gesture();
+                            gesture_available = 0;
+                        }
+
+                        send_frame();
+
                         rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff));
                         if(rx_size > 0) {
                             if(rx_buff[0] == '\0') {
@@ -206,7 +333,7 @@ int main()
                             // clear task
                             unsigned i;
                             for(i = 0; i < 35; ++i) {
-                                todo_list[num_of_tasks][i] = " ";
+                                todo_list[num_of_tasks][i] = 0;
                             }
                             // read in instruction
                             int index = 0;
@@ -217,16 +344,6 @@ int main()
                             index++;
                             todo_list[num_of_tasks][index] = '\0';
 
-                            // set box
-                            frame_buffer[1][5 + num_of_tasks * 2] = 800;// unchecked box code
-
-                            // write into frame buffer
-                            index = 0;
-                            while(todo_list[num_of_tasks][index] != '\0') {
-                                frame_buffer[index + 4][5 + num_of_tasks * 2] = todo_list[num_of_tasks][index];//ascii_to_value(todo_list[num_of_tasks][i]);
-                                index++;
-                            }
-
                             if(num_of_tasks == 4) {
                                 tasks_full = 1;
                             }
@@ -235,8 +352,8 @@ int main()
                             }
                         }
                         else {
-                            char msg[16] = "Tasks are full\n";
-                            MSS_UART_polled_tx( &g_mss_uart1, msg, 16);
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
                         }
                     }
                     // check task
@@ -252,10 +369,11 @@ int main()
 
                         // valid task
                         if(task_number < num_of_tasks) {
-                            frame_buffer[1][5 + task_number * 2] = 800; // checked box code
+                            
                         }
                         else {
-                            // send message not task to check
+                            char msg = 'E';
+                            MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
                         }
                     }
                     // delete
@@ -291,77 +409,22 @@ int main()
                     }
                 }
             }
-
-            // SONG PAGE
             else if(mode == 'S') {
+                char msg = 'A';
+                MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
                 char command;
-                char full_string[35];
                 int index = 0;
-                while (1) {
-                    while(1) {
-                    	if(gesture_available == 1) {
-							handle_gesture();
-							gesture_available = 0;
-						}
-                        rx_size = MSS_UART_get_rx( &g_mss_uart1, rx_buff, sizeof(rx_buff));
-                        if(rx_size > 0) {
-                            if(rx_buff[0] == '\0') {
-                                full_string[index] = '\0';
-                                rx_size = 0;
-                                index = 0;
-                                break;
-                            }
-                            full_string[index] = rx_buff[0];
-                            index++;
-                        }
-                    }
 
-                    command = full_string[0];
-                    // update song name
-                    // n <string>
-                    if(command == 'n') {
-                        int index = 0;
-                        char song_name[30];
-                        // read in instruction
-                        while(full_string[index + 2] != '\0') {
-                            song_name[index] = full_string[index + 2];
-                            index++;
-                        }
-
-
-
-                    }
-                    // update artist name
-                    // a <string>
-                    else if(command == 'a') {
-
-                    }
-                    else if(command == 'q') {
-                        break;
-                    }
-                    // maybe add change color of play button
-
-                }
+                // use rx_buff to read in song name or artist
+                
             }
 
-
-        }
-
-        tx_size = MSS_UART_get_rx( &g_mss_uart0, tx_buff, sizeof(tx_buff));
-        if(tx_size > 0){
-            int index = 0;
-            while(tx_buff[0] != '\r') {
-                msg[index] = tx_buff[0];
-
-                MSS_UART_get_rx( &g_mss_uart0, tx_buff, sizeof(tx_buff));
-
-                index++;
             }
-
-            MSS_UART_polled_tx( &g_mss_uart1, msg, index);
-            tx_size = 0;
+            else {
+                char msg = 'E';
+                MSS_UART_polled_tx( &g_mss_uart1, &msg, 1);
+            }
         }
-
     }
 }
 
