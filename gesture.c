@@ -7,6 +7,8 @@
 
 #include "drivers/mss_i2c/mss_i2c.h"
 #include "gesture.h"
+#include "globals.h"
+#include "frame.h"
 
 
 /**
@@ -16,7 +18,14 @@
  */
 
 void handle_gesture() {
-
+	if(isGestureAvailable()) {
+		int i = 0;
+		while(i < 1000000) {
+			i++;
+		}
+		gesture = readGesture();
+		update_page(page_selected, gesture);
+	}
 }
 
 
@@ -569,8 +578,7 @@ uint8_t processGestureData() {
         }
 
         /* If one of the _first values is 0, then there is no good data */
-        if( (u_first == 0) || (d_first == 0) || \
-           (l_first == 0) || (r_first == 0) ) {
+        if( (u_first == 0) || (d_first == 0) || (l_first == 0) || (r_first == 0) ) {
 
             return 0;
         }
@@ -673,15 +681,13 @@ uint8_t processGestureData() {
 
     /* Determine Near/Far gesture */
     if( (gesture_ud_count_ == 0) && (gesture_lr_count_ == 0) ) {
-        if( (abs(ud_delta) < GESTURE_SENSITIVITY_2) && \
-           (abs(lr_delta) < GESTURE_SENSITIVITY_2) ) {
+        if( (abs(ud_delta) < GESTURE_SENSITIVITY_2) && (abs(lr_delta) < GESTURE_SENSITIVITY_2) ) {
 
             if( (ud_delta == 0) && (lr_delta == 0) ) {
                 gesture_near_count_++;
             } else if( (ud_delta != 0) || (lr_delta != 0) ) {
                 gesture_far_count_++;
             }
-
             if( (gesture_near_count_ >= 10) && (gesture_far_count_ >= 2) ) {
                 if( (ud_delta == 0) && (lr_delta == 0) ) {
                     gesture_state_ = NEAR_STATE;
@@ -692,8 +698,7 @@ uint8_t processGestureData() {
             }
         }
     } else {
-        if( (abs(ud_delta) < GESTURE_SENSITIVITY_2) && \
-           (abs(lr_delta) < GESTURE_SENSITIVITY_2) ) {
+        if( (abs(ud_delta) < GESTURE_SENSITIVITY_2) && (abs(lr_delta) < GESTURE_SENSITIVITY_2) ) {
 
             if( (ud_delta == 0) && (lr_delta == 0) ) {
                 gesture_near_count_++;

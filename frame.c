@@ -5,24 +5,147 @@
  *      Author: hsiehju
  */
 
+#include "drivers/mss_uart/mss_uart.h"
+#include "drivers/mss_i2c/mss_i2c.h"
+#include "drivers/mss_spi/mss_spi.h"
+#include "drivers/mss_gpio/mss_gpio.h"
+
 #include "frame.h"
 
-void update_page(uint8_t page) {
-    switch(page) {
+const uint8_t frame_size = 8;
+
+void send_frame() {
+
+
+	uint8_t x, y;
+	char spi_frame[3000];
+	uint8_t index = 0;
+
+	for(y = 0; y < 15; ++y) {
+		for(x = 0; x < 40; ++x) {
+			spi_frame[index] = 0xFE;
+			index++;
+			spi_frame[index] = x;
+			index++;
+			spi_frame[2] = y;
+			index++;
+			spi_frame[3] = frame_buffer[x][y];
+			index++;
+			spi_frame[index] = 0xFF;
+			index++;
+		}
+	}
+	MSS_SPI_set_slave_select( &g_mss_spi1, MSS_SPI_SLAVE_0 );
+	MSS_SPI_transfer_block(&g_mss_spi0, spi_frame, sizeof(spi_frame), 0, 0);
+	MSS_SPI_clear_slave_select( &g_mss_spi1, MSS_SPI_SLAVE_0 );
+
+}
+
+
+void update_frame_buffer() {
+	uint32_t x;
+	uint32_t y;
+
+	for(x = 0; x < 40; ++x) {
+		for(y = 0; y < 15; ++y) {
+			frame_buffer[x][y] = 0;
+		}
+	}
+
+	if(page_selected == 0) {
+		// cleared already
+	}
+
+	// MAIN PAGE
+	else if(page_selected == 1) {
+		// WEATHER ICON
+		// FRAMEBUFFER start (2, 1)
+		icon_to_fb(icon_selected);
+
+		// TIME
+		// FRAMEBUFFER start (26, 1)
+		large_number_to_fb(time[0], 26, 1);
+		large_number_to_fb(time[1], 28, 1);
+		large_number_to_fb(time[2], 30, 1);
+		large_number_to_fb(time[3], 32, 1);
+		large_number_to_fb(time[4], 34, 1);
+		frame_buffer[36][1] = ascii_to_value(time[6]);
+		frame_buffer[37][1] = ascii_to_value(time[7]);
+		// DATE
+		// FRAMEBUFFER start (29,3)
+		frame_buffer[29][3] = date[0];
+		frame_buffer[30][3] = date[1];
+		frame_buffer[31][3] = date[2];
+		frame_buffer[32][3] = date[3];
+		frame_buffer[33][3] = date[4];
+		frame_buffer[34][3] = date[5];
+		frame_buffer[35][3] = date[6];
+		frame_buffer[36][3] = date[7];
+		frame_buffer[37][3] = date[8];
+
+		// TEMP
+		// FRAMEBUFFER start (9,4)
+		large_number_to_fb(temp[0], 9, 4);
+		large_number_to_fb(temp[1], 11, 4);
+		frame_buffer[13][4] = ascii_to_value(temp[2]);
+	}
+	else if(page_selected  == 2) {
+
+	}
+	else if(page_selected == 3) {
+
+	}
+}
+
+void update_page(uint8_t current_page, int recv_gesture) {
+    switch(current_page) {
         case BLANKPAGE: {
-            page_selected = BLANKPAGE;
-        }
-        case MAINPAGE: {
             page_selected = MAINPAGE;
         }
+        case MAINPAGE: {
+        	if(recv_gesture == DIR_LEFT) {
+        		page_selected = TODOPAGE;
+        	}
+        	else if (recv_gesture == DIR_UP){
+        		page_selected = SONGPAGE;
+        	}
+        	else if (recv_gesture == DIR_DOWN) {
+        		// pause music
+        	}
+        	else {
+        		page_selected = MAINPAGE;
+        	}
+        }
         case TODOPAGE: {
-            page_selected = TODOPAGE;
+        	if(recv_gesture == DIR_RIGHT) {
+				page_selected = MAINPAGE;
+			}
+			else if (recv_gesture == DIR_UP){
+				page_selected = SONGPAGE;
+			}
+			else if (recv_gesture == DIR_DOWN) {
+				// pause music
+			}
+			else {
+				page_selected = TODOPAGE;
+			}
         }
         case SONGPAGE: {
-            page_selected = SONGPAGE;
+        	if(recv_gesture == DIR_RIGHT) {
+				// next song
+			}
+			else if (recv_gesture == DIR_UP){
+				// play/pause song
+			}
+			else if (recv_gesture == DIR_DOWN) {
+				page_selected = MAINPAGE;
+			}
+			else {
+				page_selected = SONGPAGE;
+			}
         }
         default: {
-            page_selected = BLANKPAGE;
+            page_selected = MAINPAGE;
         }
     }
 }
@@ -130,12 +253,33 @@ void update_time(void) {
         time[7] = time_sec % 10 + '0';
     }
 
-
     enable_interrupts();
 }
 
-void update_weather() {
-
+void update_weather_icon(uint8_t icon) {
+	switch(icon) {
+		case CLOUDY: {
+			icon_selected = CLOUDY;
+		}
+		case MOON: {
+			icon_selected = MOON;
+		}
+		case PARTLY_CLOUDY: {
+			icon_selected = PARTLY_CLOUDY;
+		}
+		case RAINY: {
+			icon_selected = RAINY;
+		}
+		case SNOWY: {
+			icon_selected = SNOWY;
+		}
+		case SUNNY: {
+			icon_selected = SUNNY;
+		}
+		default: {
+			icon_selected = SUNNY;
+		}
+	}
 }
 
 void update_quote() {
@@ -151,7 +295,6 @@ void update_temperature() {
 void update_todo() {
 
 }
-
 
 // SONG PAGE
 void update_songname() {

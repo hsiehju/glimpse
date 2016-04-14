@@ -18,7 +18,7 @@ extern char frame_buffer[40][15];
 
 // MAIN PAGE
 extern char time[9];
-extern char date[5];
+extern char date[10];
 extern char temp[4];
 extern char icon[6][6];
 extern uint8_t icon_selected;
@@ -35,6 +35,10 @@ extern uint8_t tasks_full;
 extern char song_name[35];
 extern char artist[35];
 
+// INT
+extern uint8_t gesture_available;
+extern int gesture;
+
 
 // PAGE SELECTION
 // 0 blank page
@@ -43,8 +47,13 @@ extern char artist[35];
 // 3 song page
 extern uint8_t page_selected;
 
+
 void GPIO0_IRQHandler();
 
 char ascii_to_value(char ascii);
+
+char large_number_to_fb(char ascii, uint8_t x, uint8_t y);
+
+char icon_to_fb(uint8_t icon);
 
 #endif /* GLOBALS_H_ */
