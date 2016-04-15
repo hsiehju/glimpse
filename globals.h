@@ -14,7 +14,7 @@
 #define TX_BUFF_SIZE    64
 
 // FRAME BUFFER
-extern char frame_buffer[40][15];
+extern unsigned frame_buffer[40][15];
 
 // MAIN PAGE
 extern char time[9];
@@ -22,7 +22,7 @@ extern char date[10];
 extern char temp[4];
 extern char icon[6][6];
 extern uint8_t icon_selected;
-extern const char quote_title[16];
+extern const char quote_title[17];
 extern char quotes_lib[5][93];
 extern uint8_t quote_selected;
 
@@ -34,8 +34,8 @@ extern uint8_t num_of_tasks;
 extern uint8_t tasks_full;
 
 // SONG
-extern char song_name[35];
-extern char artist[35];
+extern char song_name[40];
+extern char artist[40];
 
 // INT
 extern uint8_t gesture_available;

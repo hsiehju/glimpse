@@ -11,7 +11,7 @@
 #include "frame.h"
 
 // FRAME BUFFER
-char frame_buffer[40][15];
+unsigned frame_buffer[40][15];
 
 // MAIN PAGE
 char time[9] = "03:56:00";

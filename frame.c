@@ -15,29 +15,33 @@
 const uint8_t frame_size = 8;
 
 void send_frame() {
-
-
 	uint8_t x, y;
-	char spi_frame[3000];
-	uint8_t index = 0;
+	unsigned char spi_frame[3000];
+	unsigned long long index = 0;
 
-	for(y = 0; y < 15; ++y) {
-		for(x = 0; x < 40; ++x) {
-			spi_frame[index] = 0xFE;
+	for(x = 0; x < 40; ++x) {
+		for(y = 0; y < 15; ++y) {
+			spi_frame[index] = 0b11111111;
 			index++;
 			spi_frame[index] = x;
 			index++;
-			spi_frame[2] = y;
+			spi_frame[index] = y;
 			index++;
-			spi_frame[3] = frame_buffer[x][y];
+			spi_frame[index] = frame_buffer[x][y];
 			index++;
-			spi_frame[index] = 0xFF;
+			spi_frame[index] = 0b11111110;
 			index++;
 		}
 	}
-	MSS_SPI_set_slave_select( &g_mss_spi1, MSS_SPI_SLAVE_0 );
-	MSS_SPI_transfer_block(&g_mss_spi0, spi_frame, sizeof(spi_frame), 0, 0);
-	MSS_SPI_clear_slave_select( &g_mss_spi1, MSS_SPI_SLAVE_0 );
+
+
+	for(index = 0; index < 3000; ++index) {
+		MSS_SPI_set_slave_select( &g_mss_spi1, MSS_SPI_SLAVE_0 );
+		//MSS_GPIO_set_output(MSS_GPIO_1, 0);
+		MSS_SPI_transfer_frame(&g_mss_spi1, spi_frame[index]);
+		//MSS_GPIO_set_output(MSS_GPIO_1, 1);
+		MSS_SPI_clear_slave_select( &g_mss_spi1, MSS_SPI_SLAVE_0 );
+	}
 
 }
 
