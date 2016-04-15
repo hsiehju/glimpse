@@ -1,11 +1,11 @@
-module mirror_spi_driver(master_clk, s_clk, ss, datain, button, button1, ssOut, LEDR, LEDG, spi_clk, byte_received, new_byte_out, new_byte_out1, clk_out, ssOut1, ssOut2);
+module mirror_spi_driver(master_clk, s_clk, ss, datain, ssOut, LEDR, LEDG, spi_clk, byte_received, new_byte_out, new_byte_out1, clk_out, ssOut1, ssOut2);
 
 	input master_clk, s_clk, ss;
 	input datain; //button, button1;
 	output spi_clk, byte_received, new_byte_out, new_byte_out1, clk_out;
 
 	wire new_clk;
-	divideClock d(master_clk, new_clk);
+	//divideClock d(master_clk, new_clk);
 	
 	reg [7:0]frame_buffer[39:0][14:0];
 
@@ -21,8 +21,8 @@ module mirror_spi_driver(master_clk, s_clk, ss, datain, button, button1, ssOut, 
 	reg [5:0]state = 6'b000100;
 	reg [5:0]next_state;
 	
-//	output  [7:0] LEDR;
-//	output reg [7:0] LEDG = 8'b00000000;
+	output  [7:0] LEDR;
+	output reg [7:0] LEDG = 8'b00000000;
 	parameter A = 6'b000001;
 	parameter B = 6'b000010;
 	parameter C = 6'b000100;
@@ -30,42 +30,42 @@ module mirror_spi_driver(master_clk, s_clk, ss, datain, button, button1, ssOut, 
 	parameter E = 6'b010000;
 	parameter F = 6'b100000;
 	
-//	output [6:0]ssOut;
-//	output [6:0]ssOut1;
-//	output [6:0]ssOut2;
-//	assign spi_clk = s_clk;
-//	assign new_byte_out = new_byte[0];
-//	assign new_byte_out1 = new_byte[1];
-//	assign clk_out = new_clk;
+	output [6:0]ssOut;
+	output [6:0]ssOut1;
+	output [6:0]ssOut2;
+	assign spi_clk = s_clk;
+	assign new_byte_out = new_byte[0];
+	assign new_byte_out1 = new_byte[1];
+	assign clk_out = new_clk;
 	//shift s_clk
 	reg [2:0]s_clkr;
-	always @(posedge new_clk)
+	always @(posedge master_clk)
 		 s_clkr <= {s_clkr[1:0], s_clk};
 	wire s_clk_risingedge = (s_clkr[2:1] == 2'b01);  // detect rising edges
 	
 	// shift ss_rise
 	reg [2:0] ss_rise;  
-	always @(posedge new_clk) 
+	always @(posedge master_clk) 
 		ss_rise <= {ss_rise[1:0], ss};
 	wire ss_rising = (ss_rise[2:1] == 2'b01);
 	wire ss_falling = (ss_rise[2:1] == 2'b10);
 	
 	// shift ss
 	reg [2:0] ssr;  
-	always @(posedge new_clk) 
+	always @(posedge master_clk) 
 		ssr <= {ssr[1:0], ss};
 	wire ss_active = ~ssr[1];  // ss is active low
 
 	// shift datain
 	reg [1:0] datainr;  
-	always @(posedge new_clk) 
+	always @(posedge master_clk) 
 		datainr <= {datainr[0], datain};
 	wire MOSI_data = datainr[1];
 	
 
 	
 	// check if slave selected and rising edge
-	always @(posedge new_clk)
+	always @(posedge master_clk)
 	begin
 		if(byte_received)
 			byte_received <= 0;
@@ -86,20 +86,20 @@ module mirror_spi_driver(master_clk, s_clk, ss, datain, button, button1, ssOut, 
 	end
 
 	// update frame_buffer if byte has been received
-	always @(posedge new_clk)
+	always @(posedge master_clk)
 	begin
 		if(byte_received)
 		begin
-//			LEDG[6] <= ~LEDG[6];
+			LEDG[6] <= ~LEDG[6];
 			new_byte <= byte_builder;
 			state <= next_state;
 		end
 	end
 	
-//	assign LEDR[7:0] = new_byte[7:0];
-//	numToLetter n1(char_to_add, ssOut);
-//	numToLetter n2(byte_builder, ssOut2);
-//	numToLetter n3(new_byte, ssOut1);
+	assign LEDR[7:0] = new_byte[7:0];
+	numToLetter n1(char_to_add, ssOut);
+	numToLetter n2(byte_builder, ssOut2);
+	numToLetter n3(new_byte, ssOut1);
 	
 	always@*
 	begin
@@ -132,31 +132,31 @@ module mirror_spi_driver(master_clk, s_clk, ss, datain, button, button1, ssOut, 
 	endcase
 	end
 	
-	always@(posedge new_clk)
+	always@(posedge master_clk)
 	begin
 	case(state)
 	A:		begin
-//				LEDG[0] <= 1;
-//				LEDG[5:1] <= 0;
+				LEDG[0] <= 1;
+				LEDG[5:1] <= 0;
 			end
 	B:		begin
-//				LEDG[0] <= 0;
-//				LEDG[1] <= 1;
+				LEDG[0] <= 0;
+				LEDG[1] <= 1;
 				col <= new_byte;
 			end
 	C:		begin
-//				LEDG[1] <= 0;
-//				LEDG[2] <= 1;
+				LEDG[1] <= 0;
+				LEDG[2] <= 1;
 				row <= new_byte;
 			end
 	D:		begin
-//				LEDG[2] <= 0;
-//				LEDG[3] <= 1;
+				LEDG[2] <= 0;
+				LEDG[3] <= 1;
 				char_to_add <= new_byte; //grab character
 			end
 	E:		begin
-//				LEDG[3] <= 0;
-//				LEDG[4] <= 1;
+				LEDG[3] <= 0;
+				LEDG[4] <= 1;
 				if(new_byte == 8'b11111110)
 					frame_buffer[col][row] <= char_to_add;
 			end
