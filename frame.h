@@ -32,14 +32,14 @@
 
 
 #define ICON_START_X		2
-#define ICON_START_Y		1
+#define ICON_START_Y		2
 #define ICON_END_X			7
-#define ICON_END_Y			7
+#define ICON_END_Y			5
 
 #define TEMP_START_X		9
-#define TEMP_START_Y		4
+#define TEMP_START_Y		3
 #define TEMP_END_X			12
-#define TEMP_END_Y			5
+#define TEMP_END_Y			4
 
 #define QUOTE_T_START_X		6
 #define QUOTE_T_Y			9

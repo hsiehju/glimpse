@@ -2,6 +2,8 @@
 #include "drivers/mss_i2c/mss_i2c.h"
 #include "drivers/mss_spi/mss_spi.h"
 #include "drivers/mss_gpio/mss_gpio.h"
+#include "drivers/CoreUARTapb/core_uart_apb.h"
+#include "drivers/CoreUARTapb/coreuartapb_regs.h"
 
 #include <stdio.h>
 #include <inttypes.h>
@@ -10,6 +12,7 @@
 #include "mytimer.h"
 #include "gesture.h"
 #include "frame.h"
+#include "visualizer.h"
 
 
 int main()
@@ -25,11 +28,19 @@ int main()
     MSS_UART_init(&g_mss_uart0, MSS_UART_9600_BAUD, MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT);
     MSS_UART_init(&g_mss_uart1, MSS_UART_9600_BAUD, MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT);
 
+    uint16_t baud_value_2 = 650;
+    addr_t base_addr_2 = 0x40050000;
+
+    UART_init(&uart2, base_addr_2, baud_value_2, (DATA_8_BITS | NO_PARITY));
+
     MSS_I2C_init(&g_mss_i2c1 , APDS9960_I2C_ADDR , MSS_I2C_PCLK_DIV_256 );
 
 	MSS_SPI_init( &g_mss_spi1 );
-	MSS_SPI_configure_master_mode(&g_mss_spi1, MSS_SPI_SLAVE_0, MSS_SPI_MODE0, MSS_SPI_PCLK_DIV_256, frame_size);
+	MSS_SPI_configure_master_mode(&g_mss_spi1, MSS_SPI_SLAVE_0, MSS_SPI_MODE0, MSS_SPI_PCLK_DIV_128, frame_size);
 
+
+	//INIT VISUALIZER
+	init_visualizer();
 
 
 	// TODO LIST BOOKKEEPING
@@ -60,8 +71,8 @@ int main()
     }
 
 	startTimerContinuous(&update_frame_buffer, 80000000); //10us
-	//startTimerContinuous(&update_time, 90000000);	//1 second
-	//startTimerContinuous(&update_temperature, 500000000);	//5 second
+	startTimerContinuous(&update_time, 90800000);	//1 second
+	startTimerContinuous(&update_temperature, 500000000);	//5 second
 
 	start_hardware_timer(root->time);
 	MSS_TIM1_start();
@@ -70,7 +81,7 @@ int main()
 
     MSS_GPIO_config(MSS_GPIO_0, MSS_GPIO_IRQ_EDGE_NEGATIVE);
 
-    MSS_GPIO_config(MSS_GPIO_1, MSS_GPIO_OUTPUT_MODE);
+    //MSS_GPIO_config(MSS_GPIO_1, MSS_GPIO_OUTPUT_MODE);
 
     MSS_GPIO_enable_irq(MSS_GPIO_0);
 
@@ -83,13 +94,15 @@ int main()
 
     // BLUETOOTH polling
     while (1) {
-
+			visualize();
 			// GESTURE
 			if(gesture_available == 1) {
 				handle_gesture();
 				gesture_available = 0;
 			}
 
+			update_temperature();
+			update_frame_buffer();
 			// UPDATE FRAME
 			send_frame();
 

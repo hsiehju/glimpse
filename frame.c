@@ -9,6 +9,7 @@
 #include "drivers/mss_i2c/mss_i2c.h"
 #include "drivers/mss_spi/mss_spi.h"
 #include "drivers/mss_gpio/mss_gpio.h"
+#include "drivers/CoreUARTapb/core_uart_apb.h"
 
 #include "frame.h"
 
@@ -87,14 +88,14 @@ void update_frame_buffer() {
 		frame_buffer[37][3] = ascii_to_value(date[8]);
 		// TEMP
 		// FRAMEBUFFER start (9,4)
-		large_number_to_fb(temp[0], 9, 4);
-		large_number_to_fb(temp[1], 11, 4);
-		frame_buffer[13][4] = ascii_to_value(temp[2]);   
+		large_number_to_fb(temp[0], 9, 3);
+		large_number_to_fb(temp[1], 11, 3);
+		frame_buffer[13][3] = ascii_to_value(temp[2]);
         // QUOTE
         // FRAMEBUFFER start (6, 8)
         uint8_t i;
         for(i = QUOTE_T_START_X; i < QUOTE_T_END_X; ++i) {
-            frame_buffer[i][QUOTE_T_Y] = quote_title[i - QUOTE_T_START_X];
+            frame_buffer[i][QUOTE_T_Y] = ascii_to_value(quote_title[i - QUOTE_T_START_X]);
         }
         // finish quote
 	}
@@ -126,6 +127,7 @@ void update_page(uint8_t current_page, int recv_gesture) {
         	else {
         		page_selected = MAINPAGE;
         	}
+        	break;
         }
         case TODOPAGE: {
         	if(recv_gesture == DIR_RIGHT) {
@@ -140,6 +142,7 @@ void update_page(uint8_t current_page, int recv_gesture) {
 			else {
 				page_selected = TODOPAGE;
 			}
+        	break;
         }
         case SONGPAGE: {
         	if(recv_gesture == DIR_RIGHT) {
@@ -154,9 +157,11 @@ void update_page(uint8_t current_page, int recv_gesture) {
 			else {
 				page_selected = SONGPAGE;
 			}
+        	break;
         }
         default: {
             page_selected = MAINPAGE;
+            break;
         }
     }
 }
@@ -165,8 +170,6 @@ void update_page(uint8_t current_page, int recv_gesture) {
 // MAIN PAGE
 // update every 1 second
 void update_time(void) {
-    disable_interrupts();
-
     uint32_t time_sec = 0;
     uint32_t time_min = 0;
     uint32_t time_hour = 0;
@@ -263,13 +266,25 @@ void update_time(void) {
         time[6] = '5';
         time[7] = time_sec % 10 + '0';
     }
-
-    enable_interrupts();
 }
 
 
 void update_temperature() {
+	uint8_t rx_buffer[10] = "";
+	uint8_t rx_size = 0;
 
+	rx_size = UART_get_rx(&uart2, rx_buffer, 1);
+	UART_get_rx(&uart2, rx_buffer, 1);
+	UART_get_rx(&uart2, rx_buffer, 1);
+	if(rx_size > 0){
+		//do things
+		//first digit of temp = rx_buffer[0]
+		temp[0] = rx_buffer[0];
+		//second digit of temp = rx_buffer[1]
+		temp[1] = rx_buffer[1];
+		//begin weather icon = rx_buffer[2]
+		icon_selected = rx_buffer[2];
+	}
 }
 
 

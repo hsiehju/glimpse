@@ -9,6 +9,7 @@
 #define GLOBALS_H_
 
 #include <inttypes.h>
+#include "drivers/CoreUARTapb/core_uart_apb.h"
 
 #define RX_BUFF_SIZE    64
 #define TX_BUFF_SIZE    64
@@ -41,6 +42,7 @@ extern char artist[40];
 extern uint8_t gesture_available;
 extern int gesture;
 
+extern UART_instance_t uart2;
 
 // PAGE SELECTION
 // 0 blank page
