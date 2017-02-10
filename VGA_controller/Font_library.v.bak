@@ -1,0 +1,11 @@
+module font_library(VGA_clk, xPixel, yPixel, pixelOutput);
+	input VGA_clk;
+	input [9:0] xPixel, yPixel;
+	
+	output pixelOutput;
+
+	reg font_library [5:0][3:0][4:0];
+	
+	
+
+endmodule

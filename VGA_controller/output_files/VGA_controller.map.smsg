@@ -1,0 +1,9 @@
+Warning (10268): Verilog HDL information at VGA_controller.v(94): always construct contains both blocking and non-blocking assignments
+Warning (10268): Verilog HDL information at VGA_controller.v(133): always construct contains both blocking and non-blocking assignments
+Warning (10268): Verilog HDL information at VGA_controller.v(141): always construct contains both blocking and non-blocking assignments
+Warning (10268): Verilog HDL information at VGA_controller.v(195): always construct contains both blocking and non-blocking assignments
+Warning (10268): Verilog HDL information at VGA_controller.v(200): always construct contains both blocking and non-blocking assignments
+Warning (10268): Verilog HDL information at VGA_controller.v(202): always construct contains both blocking and non-blocking assignments
+Info (10281): Verilog HDL Declaration information at VGA_controller.v(31): object "update" differs only in case from object "UPDATE" in the same scope
+Warning (10268): Verilog HDL information at VGA_controller.v(361): always construct contains both blocking and non-blocking assignments
+Warning (10268): Verilog HDL information at VGA_controller.v(376): always construct contains both blocking and non-blocking assignments
